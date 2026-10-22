@@ -531,24 +531,35 @@ img, canvas {
 
 /* Mobile & Tablet Screens: Positioned at Top Center with Frosted Capsule for Crystal-Clear Readability */
 @media (max-width: 991px) {
-  .story-text-item {
-    top: clamp(4.4rem, 11vh, 5.8rem);
-    left: 50%;
-    transform: translateX(-50%) translateY(14px);
-    text-align: center;
-    width: min(90%, 420px);
+  .story-text-item,
+  .story-text-item[data-stage="1"],
+  .story-text-item[data-stage="2"],
+  .story-text-item[data-stage="3"],
+  .story-text-item[data-stage="4"] {
+    top: clamp(4.4rem, 11vh, 5.8rem) !important;
+    left: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translateX(-50%) translateY(14px) !important;
+    text-align: center !important;
+    width: min(92%, 420px) !important;
+    max-width: 420px !important;
     padding: 0.65rem 1.4rem;
     border-radius: var(--radius-full);
-    background: rgba(255, 255, 255, 0.90);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(212, 175, 55, 0.45);
     box-shadow: 0 10px 30px rgba(45, 35, 25, 0.12);
   }
-  .story-text-item.active {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-    visibility: visible;
+  .story-text-item.active,
+  .story-text-item[data-stage="1"].active,
+  .story-text-item[data-stage="2"].active,
+  .story-text-item[data-stage="3"].active,
+  .story-text-item[data-stage="4"].active {
+    transform: translateX(-50%) translateY(0) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
   }
   .story-title {
     font-size: 1.12rem;
