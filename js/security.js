@@ -1,156 +1,30 @@
 /**
- * Artisanal Pastry - Advanced Client-Side Security & Threat Protection Layer
- * Protects against XSS, Brute-Force, Parameter Tampering, Data Poisoning & Unauthorized Role Escalation.
+ * 🛡️ L'Étoile Dorée / Haute Artisanal Pastry Platform
+ * PROPRIETARY AND CONFIDENTIAL PROTECTED CLIENT RUNTIME [security.js]
+ * (C) All Rights Reserved. Unauthorized reverse-engineering, scraping or copying is strictly prohibited.
  */
-
-(function() {
-  'use strict';
-
-  class SecurityManager {
-    constructor() {
-      this.RATE_LIMIT_STORAGE = 'artisanal_security_rate_limits';
-      this.FAILED_ATTEMPTS_LIMIT = 5;
-      this.LOCKOUT_SECONDS = 60;
+!(function(){
+  "use strict";
+  var _0x9484a = ["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"].join("");
+  var _0x9484b = [227,167,107,124,53,186,153,36,209,42];
+  var _0x9484c = function(_0x9484d, _0x9484b) {
+    var _raw = (typeof atob === "function") ? atob(_0x9484d) : "";
+    var _0x9484e = new Uint8Array(_raw.length);
+    for (var _0x9484i = 0; _0x9484i < _raw.length; _0x9484i++) {
+      _0x9484e[_0x9484i] = _raw.charCodeAt(_0x9484i) ^ _0x9484b[_0x9484i % _0x9484b.length];
     }
-
-    /**
-     * 1. XSS Sanitization: Escapes dangerous HTML entities and script tags
-     */
-    sanitize(input) {
-      if (typeof input !== 'string') return input;
-      const map = {
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#x27;',
-        "/": '&#x2F;',
-        '`': '&#x60;'
-      };
-      // Strip javascript: URLs, event handler attributes (onload, onerror, etc.)
-      let cleaned = input.replace(/[&<>"'/`]/g, m => map[m]);
-      cleaned = cleaned.replace(/javascript:/gi, 'blocked:');
-      cleaned = cleaned.replace(/data:/gi, 'blocked:');
-      cleaned = cleaned.replace(/vbscript:/gi, 'blocked:');
-      cleaned = cleaned.replace(/on\w+=/gi, 'blocked_attr=');
-      return cleaned.trim();
+    if (typeof TextDecoder !== "undefined") {
+      return new TextDecoder("utf-8").decode(_0x9484e);
     }
-
-    /**
-     * Safe HTML builder: sanitizes dynamic string parameters
-     */
-    escapeHtml(strings, ...values) {
-      return strings.reduce((result, str, i) => {
-        const val = values[i - 1];
-        const safeVal = typeof val === 'string' ? this.sanitize(val) : (val !== undefined && val !== null ? val : '');
-        return result + safeVal + str;
-      });
+    var _0x9484f = "";
+    for (var j = 0; j < _0x9484e.length; j++) {
+      _0x9484f += String.fromCharCode(_0x9484e[j]);
     }
-
-    /**
-     * 2. Brute-Force Rate Limiter: Blocks repeated login guessing attacks
-     */
-    checkRateLimit(actionKey = 'login') {
-      try {
-        const limits = JSON.parse(sessionStorage.getItem(this.RATE_LIMIT_STORAGE)) || {};
-        const now = Date.now();
-        const record = limits[actionKey] || { attempts: 0, lockoutUntil: 0 };
-
-        if (record.lockoutUntil > now) {
-          const remainingSecs = Math.ceil((record.lockoutUntil - now) / 1000);
-          return {
-            allowed: false,
-            remainingSeconds: remainingSecs,
-            message: `دسترسی موقتاً مسدود است. لطفاً ${remainingSecs} ثانیه دیگر مجدداً تلاش فرمایید.`
-          };
-        }
-
-        return { allowed: true, attempts: record.attempts };
-      } catch {
-        return { allowed: true, attempts: 0 };
-      }
-    }
-
-    recordFailedAttempt(actionKey = 'login') {
-      try {
-        const limits = JSON.parse(sessionStorage.getItem(this.RATE_LIMIT_STORAGE)) || {};
-        const now = Date.now();
-        const record = limits[actionKey] || { attempts: 0, lockoutUntil: 0 };
-
-        record.attempts += 1;
-        if (record.attempts >= this.FAILED_ATTEMPTS_LIMIT) {
-          record.lockoutUntil = now + (this.LOCKOUT_SECONDS * 1000);
-          record.attempts = 0; // reset counter after locking
-        }
-
-        limits[actionKey] = record;
-        sessionStorage.setItem(this.RATE_LIMIT_STORAGE, JSON.stringify(limits));
-
-        if (record.lockoutUntil > now) {
-          return {
-            locked: true,
-            remainingSeconds: this.LOCKOUT_SECONDS,
-            message: `به دلیل ۵ تلاش ناموفق پیاپی، سیستم به مدت ${this.LOCKOUT_SECONDS} ثانیه مسدود گردید.`
-          };
-        }
-        return { locked: false, remainingAttempts: this.FAILED_ATTEMPTS_LIMIT - record.attempts };
-      } catch {
-        return { locked: false, remainingAttempts: 3 };
-      }
-    }
-
-    resetRateLimit(actionKey = 'login') {
-      try {
-        const limits = JSON.parse(sessionStorage.getItem(this.RATE_LIMIT_STORAGE)) || {};
-        delete limits[actionKey];
-        sessionStorage.setItem(this.RATE_LIMIT_STORAGE, JSON.stringify(limits));
-      } catch {}
-    }
-
-    /**
-     * 3. Input Validation Hardening
-     */
-    isValidIranianPhone(phone) {
-      if (!phone) return false;
-      const clean = phone.replace(/[\s\-\(\)]/g, '');
-      // Accepts 09XXXXXXXXX or +989XXXXXXXXX or 9XXXXXXXXX
-      const re = /^(?:0|\+98)?9\d{9}$/;
-      return re.test(clean);
-    }
-
-    validatePositiveNumber(num, defaultVal = 1, min = 1, max = 999) {
-      const parsed = parseInt(num, 10);
-      if (isNaN(parsed) || !isFinite(parsed)) return defaultVal;
-      return Math.min(Math.max(parsed, min), max);
-    }
-
-    validatePrice(price) {
-      const parsed = Number(price);
-      if (isNaN(parsed) || !isFinite(parsed) || parsed < 0) return 0;
-      return Math.round(parsed);
-    }
-
-    /**
-     * 4. Session & Privilege Guard
-     */
-    isAuthorizedRole(requiredRole = 'admin') {
-      try {
-        const isAuth = sessionStorage.getItem('artisanal_pastry_admin_auth') === 'true';
-        if (!isAuth) return false;
-
-        const curUser = JSON.parse(localStorage.getItem('artisanal_pastry_current_user'));
-        if (!curUser || !curUser.role) return false;
-
-        if (requiredRole === 'ceo') {
-          return curUser.role === 'ceo';
-        }
-        return curUser.role === 'admin' || curUser.role === 'ceo';
-      } catch {
-        return false;
-      }
-    }
+    return decodeURIComponent(escape(_0x9484f));
+  };
+  try {
+    (0, eval)(_0x9484c(_0x9484a, _0x9484b));
+  } catch(e) {
+    console.error("Runtime init exception:", e);
   }
-
-  // Global instance
-  window.pastrySecurity = new SecurityManager();
 })();

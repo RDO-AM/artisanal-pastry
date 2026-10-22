@@ -1,3 +1,9 @@
+# Internal Intellectual Property & Clean Source Backup
+js_source_clean/
+*.docx
+*.py
+manual.html
+
 # Operating System Files
 Thumbs.db
 desktop.ini
