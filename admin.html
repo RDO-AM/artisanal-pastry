@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>پنل مدیریت و کنترل مجموعه | نام برند شما</title>
+  <meta name="description" content="پنل اختصاصی مدیریت، کنترل قیمت‌ها، سفارشات، تغییر رمز و مدیریت پرسنل و ادمین‌ها.">
+  <meta name="theme-color" content="#1E1B18">
+
+  <!-- Persian Font Vazirmatn -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Core & Page Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/pages.css">
+
+  <style>
+    body {
+      background-color: #F8F6F0;
+    }
+    .admin-auth-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(30, 27, 24, 0.95);
+      z-index: 5000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .admin-auth-box {
+      background: #ffffff;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      border-radius: 24px;
+      padding: 2.5rem;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+    }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: var(--radius-full);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+    .role-badge.ceo {
+      background: linear-gradient(135deg, #FFF0D0 0%, #FFE08A 100%);
+      color: #92400E;
+      border: 1px solid #D97706;
+    }
+    .role-badge.admin {
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #93C5FD;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.65rem;
+      border-radius: var(--radius-full);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .status-badge.pending {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+    .status-badge.confirmed {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+    .profile-card {
+      background: #ffffff;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 560px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.04);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Admin Auth Gate (If opened directly without login) -->
+  <div class="admin-auth-overlay" id="admin-auth-modal">
+    <div class="admin-auth-box" style="position: relative;">
+      <!-- Exit / Cancel button to return to website -->
+      <a href="index.html" style="position: absolute; top: 1.1rem; left: 1.1rem; width: 36px; height: 36px; border-radius: 50%; background: #FAF5EB; color: #888; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.2rem; font-weight: 700; transition: all 0.2s; border: 1px solid rgba(45,35,25,0.08);" title="انصراف و خروج به صفحه اصلی">✕</a>
+
+      <div style="width: 58px; height: 58px; border-radius: 50%; background: rgba(184, 134, 11, 0.12); color: var(--accent-gold); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h2 style="font-size: 1.35rem; font-weight: 800; margin-bottom: 0.5rem; color: var(--text-primary);">ورود کادر مدیریت</h2>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+        برای ورود به پنل، نام کاربری و رمز عبور معتبر مدیریت را وارد نمایید.
+      </p>
+
+      <form onsubmit="event.preventDefault(); handleDirectLogin();" style="display: flex; flex-direction: column; gap: 0.9rem;">
+        <input type="text" id="admin-direct-username" placeholder="نام کاربری..." style="width: 100%; padding: 0.8rem; border: 1.5px solid #ccc; border-radius: 12px; font-family: inherit; font-size: 0.95rem; text-align: center; direction: ltr;" required>
+        <input type="password" id="admin-direct-password" placeholder="رمز عبور..." style="width: 100%; padding: 0.8rem; border: 1.5px solid #ccc; border-radius: 12px; font-family: inherit; font-size: 0.95rem; text-align: center; direction: ltr;" required>
+        <div id="admin-login-error" style="display: none; color: #EF4444; font-size: 0.82rem; font-weight: 700;"></div>
+        <button type="submit" class="btn-checkout-now" style="width: 100%; padding: 0.85rem;">ورود به پنل</button>
+        <a href="index.html" style="display: block; text-align: center; color: #666; font-size: 0.85rem; font-weight: 700; text-decoration: none; padding: 0.6rem; border-radius: 10px; border: 1px solid #ddd; background: #fafafa; transition: all 0.2s;">
+          ← انصراف و بازگشت به سایت
+        </a>
+      </form>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="site-header" id="main-header">
+    <button class="mobile-hamburger-btn" id="mobile-menu-toggle" aria-label="منوی سایت">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <a href="index.html" class="brand-wrapper" aria-label="صفحه اصلی">
+      <div class="brand-logo-icon">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <path d="M16 2L19.2 12.8L30 16L19.2 19.2L16 30L12.8 19.2L2 16L12.8 12.8L16 2Z" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="brand-info">
+        <span class="brand-name">نام برند شما</span>
+        <span class="brand-sub">PANEL ADMIN</span>
+      </div>
+    </a>
+
+    <nav aria-label="ناوبری اصلی" class="desktop-nav">
+      <ul class="nav-links">
+        <li><a href="products.html" class="nav-link">محصولات</a></li>
+        <li><a href="cake-customizer.html" class="nav-link">سفارش کیک</a></li>
+        <li><a href="custom-orders.html" class="nav-link">سفارشات اختصاصی</a></li>
+        <li><a href="about.html#branches" class="nav-link">ارتباط با ما و شعبات</a></li>
+        <li><a href="about.html" class="nav-link">درباره ما</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions" style="display: flex; align-items: center; gap: 0.8rem;">
+      <div id="current-user-badge-header" class="role-badge admin">
+        در حال بارگذاری...
+      </div>
+      <button onclick="logoutAdmin()" class="btn-view-all" style="font-size: 0.82rem; font-weight: 800; padding: 0.45rem 1rem; color: #EF4444; border: 1.5px solid #EF4444; background: #FFF5F5; border-radius: 20px; cursor: pointer; display: flex; align-items: center; gap: 0.35rem;" title="خروج کامل از حساب">
+        <span>🚪</span><span>خروج</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay"></div>
+  <aside class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="brand-info">
+        <span class="brand-name">نام برند شما</span>
+        <span class="brand-sub">PANEL ADMIN</span>
+      </div>
+      <button class="drawer-close-btn" id="drawer-close-btn">✕</button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="products.html" class="drawer-link">محصولات</a></li>
+      <li><a href="cake-customizer.html" class="drawer-link">سفارش کیک</a></li>
+      <li><a href="custom-orders.html" class="drawer-link">سفارشات اختصاصی</a></li>
+      <li><a href="about.html#branches" class="drawer-link">ارتباط با ما و شعبات</a></li>
+      <li><a href="about.html" class="drawer-link">درباره ما</a></li>
+    </ul>
+    <div class="drawer-actions">
+      <button onclick="logoutAdmin()" class="btn-checkout-now" style="width: 100%; background: #EF4444;">خروج از پنل مدیریت</button>
+    </div>
+  </aside>
+
+  <!-- Page Main -->
+  <main class="page-container">
+    <section class="page-hero-banner" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h1 class="page-title">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent-gold);">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          پنل جامع مدیریت قنادی فاخر
+        </h1>
+        <p class="page-subtitle" id="admin-welcome-msg">
+          کنترل قیمت‌ها و کاتالوگ، بررسی سفارشات کیک و مجالس، و مدیریت کاربران سیستم.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 0.6rem;">
+        <button onclick="resetDataCatalog()" class="btn-view-all" style="border-color: #888; color: #666;" title="بازگرداندن اطلاعات قبلی">
+          بازگرداندن اطلاعات قبلی
+        </button>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <div class="admin-tabs" id="admin-tabs-nav">
+      <button class="admin-tab-btn active" id="tab-btn-products" onclick="switchAdminTab('products')">
+        🧁 محصولات و قیمت‌ها (<span id="count-products-badge">۰</span>)
+      </button>
+      <button class="admin-tab-btn" id="tab-btn-cakes" onclick="switchAdminTab('cakes')">
+        🎂 سفارشات کیک (<span id="count-cakes-badge">۰</span>)
+      </button>
+      <button class="admin-tab-btn" id="tab-btn-events" onclick="switchAdminTab('events')">
+        🏛️ سفارشات مجالس (<span id="count-events-badge">۰</span>)
+      </button>
+      <button class="admin-tab-btn" id="tab-btn-profile" onclick="switchAdminTab('profile')">
+        🔒 پروفایل و تغییر رمز
+      </button>
+      <button class="admin-tab-btn" id="tab-btn-seo" onclick="switchAdminTab('seo')">
+        🌐 تنظیمات سئو و متادیتا
+      </button>
+      <!-- CEO Exclusive Tab -->
+      <button class="admin-tab-btn" id="tab-btn-users" style="display: none; background: #FFF7ED; color: #C2410C; border: 1px solid #FDBA74;" onclick="switchAdminTab('users')">
+        👥 مدیریت پرسنل و ادمین‌ها (<span id="count-users-badge">۰</span>)
+      </button>
+    </div>
+
+    <!-- TAB 1: Products & Price Manager -->
+    <section id="tab-content-products">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 0.8rem;">
+        <div style="display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="admin-prod-search" placeholder="جستجوی نام محصول..." style="padding: 0.55rem 1rem; border-radius: var(--radius-full); border: 1px solid #ccc; font-family: inherit; width: 240px;">
+          <select id="admin-cat-filter" style="padding: 0.55rem 1rem; border-radius: var(--radius-full); border: 1px solid #ccc; font-family: inherit;">
+            <option value="all">همه ۱۲ دسته‌بندی</option>
+          </select>
+        </div>
+
+        <button onclick="openAddProductModal()" class="btn-checkout-now" style="width: auto; padding: 0.55rem 1.4rem; font-size: 0.88rem;">
+          + افزودن محصول جدید
+        </button>
+      </div>
+
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>تصویر</th>
+              <th>نام محصول</th>
+              <th>دسته‌بندی</th>
+              <th>واحد فروش</th>
+              <th>قیمت به تومان (قابل ویرایش)</th>
+              <th>عملیات</th>
+            </tr>
+          </thead>
+          <tbody id="admin-products-tbody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 2: Cake Orders -->
+    <section id="tab-content-cakes" style="display: none;">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>کد سفارش</th>
+              <th>مشتری و تلفن</th>
+              <th>شعبه انتخابی</th>
+              <th>مناسبت و وزن</th>
+              <th>طعم و فیلینگ</th>
+              <th>تاریخ تحویل</th>
+              <th>مبلغ تخمینی</th>
+              <th>وضعیت</th>
+            </tr>
+          </thead>
+          <tbody id="admin-cakes-tbody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 3: Event Orders -->
+    <section id="tab-content-events" style="display: none;">
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>کد درخواست</th>
+              <th>مشتری / سازمان</th>
+              <th>شعبه ارجاع‌شده</th>
+              <th>مناسبت</th>
+              <th>تعداد مهمان</th>
+              <th>تاریخ مراسم</th>
+              <th>برآورد قیمت</th>
+              <th>وضعیت پیگیری</th>
+            </tr>
+          </thead>
+          <tbody id="admin-events-tbody">
+            <!-- Rendered dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TAB 4: Profile & Change Password -->
+    <section id="tab-content-profile" style="display: none;">
+      <div class="profile-card">
+        <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text-primary);">
+          تنظیمات پروفایل و تغییر رمز عبور شخصی
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+          مشخصات حساب کاربری جاری خود را ویرایش نمایید.
+        </p>
+
+        <form onsubmit="event.preventDefault(); handleUpdateMyProfile();" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">نام کاربری (جهت ورود به سیستم):</label>
+            <input type="text" id="prof-username" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; direction: ltr;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">نقش در سامانه:</label>
+            <input type="text" id="prof-role" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #ddd; background: #eee; font-family: inherit;" disabled>
+          </div>
+
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">نام و عنوان نمایشی مدیر:</label>
+            <input type="text" id="prof-name" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+          </div>
+
+          <div>
+            <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">رمز عبور جدید:</label>
+            <input type="password" id="prof-new-password" placeholder="برای عدم تغییر خالی بگذارید..." style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; direction: ltr;">
+          </div>
+
+          <button type="submit" class="btn-checkout-now" style="width: auto; padding: 0.85rem 2rem; margin-top: 0.5rem;">
+            ذخیره تغییرات پروفایل
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- TAB 5: CEO Staff & Admin Management (Exclusive to CEO) -->
+    <section id="tab-content-users" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; flex-wrap: wrap; gap: 0.8rem;">
+        <div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">مدیریت کادر ادمین‌ها و پرسنل سامانه</h3>
+          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.2rem;">
+            دسترسی ویژه مدیرعامل (CEO): مشاهده، افزودن، تغییر رمز و حذف ادمین‌های سیستم.
+          </p>
+        </div>
+
+        <button onclick="openAddAdminModal()" class="btn-checkout-now" style="width: auto; padding: 0.55rem 1.4rem; font-size: 0.88rem; background: #C2410C;">
+          + افزودن ادمین جدید
+        </button>
+      </div>
+
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>نام کاربری</th>
+              <th>نام و عنوان</th>
+              <th>سطح دسترسی (نقش)</th>
+              <th>شماره تماس</th>
+              <th>تاریخ ثبت</th>
+              <th>عملیات</th>
+            </tr>
+          </thead>
+          <tbody id="admin-users-tbody">
+            <!-- Rendered dynamically for CEO -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Secret Keywords Customization Box for CEO -->
+      <div style="margin-top: 2rem; background: #FFFBEB; border: 1.5px solid #FCD34D; border-radius: 18px; padding: 1.5rem;">
+        <div style="display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem;">
+          <span style="font-size: 1.4rem;">🔑</span>
+          <h4 style="font-size: 1.1rem; font-weight: 800; color: #92400E; margin: 0;">تنظیم کلیدواژه‌های ورود اختصاصی کادر مدیریت و پرسنل</h4>
+        </div>
+        <p style="font-size: 0.83rem; color: #78350F; line-height: 1.6; margin-bottom: 1rem;">
+          پرسنل و مدیران در فرم ورودی سایت نیازی به دکمه یا لینک جداگانه ندارند؛ با تایپ هر یک از کلمات زیر در فیلد شماره همراه مشتری، کادر ورود پرسنل با نام کاربری پیش‌فرض فعال می‌گردد. کلمات را با کاما (ویرگول) از هم جدا فرمایید:
+        </p>
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+          <input type="text" id="easter-egg-words-input" style="flex: 1; min-width: 280px; padding: 0.75rem 1rem; border-radius: 10px; border: 1.5px solid #D97706; font-family: inherit; font-size: 0.9rem;" placeholder="مثال: مدیریت, پرسنل, سفارشات, chef">
+          <button onclick="handleSaveEasterEggWords()" class="btn-checkout-now" style="width: auto; padding: 0.75rem 1.8rem; background: #D97706; font-size: 0.9rem;">
+            ذخیره کلیدواژه‌های ورود
+          </button>
+        </div>
+        <div id="easter-egg-save-msg" style="display: none; font-size: 0.82rem; font-weight: 700; color: #059669; margin-top: 0.6rem;"></div>
+      </div>
+    </section>
+
+    <!-- TAB 6: Global Site SEO & Metadata Settings -->
+    <section id="tab-content-seo" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.8rem;">
+        <div>
+          <h3 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary);">🌐 مرکز بهینه‌سازی موتورهای جستجو (Google SEO & Meta Tags)</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.2rem;">
+            تنظیم عنوان صفحات، توضیحات متا، کلمات کلیدی، کدهای سرچ کنسول گوگل و داده‌های ساختاریافته (Schema.org).
+          </p>
+        </div>
+        <button onclick="handleSaveSiteSEO()" class="btn-checkout-now" style="width: auto; padding: 0.65rem 1.8rem; font-size: 0.9rem; background: #059669;">
+          💾 ذخیره تنظیمات سئوی سراسری
+        </button>
+      </div>
+
+      <!-- Live Google SERP Preview Card for Homepage -->
+      <div style="background: #FFFFFF; border: 1.5px solid #E5E7EB; border-radius: 18px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.04); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: #4B5563; font-weight: 700;">
+            <span style="display: inline-block; width: 20px; height: 20px; border-radius: 50%; background: #D97706; color: #fff; text-align: center; line-height: 20px; font-size: 11px; font-weight: 900;">G</span>
+            <span>پیش‌نمایش زنده در نتایج جستجوی گوگل (Google SERP Live Preview)</span>
+          </div>
+          <span style="font-size: 0.72rem; color: #059669; background: #ECFDF5; padding: 3px 10px; border-radius: 20px; font-weight: 700;">به‌روزرسانی آنی</span>
+        </div>
+
+        <div style="padding: 1rem; background: #FAF9F6; border-radius: 12px; border: 1px solid #F3EDE0;">
+          <!-- Breadcrumb URL -->
+          <div style="font-size: 0.8rem; color: #202124; direction: ltr; text-align: left; margin-bottom: 3px; font-family: monospace;">
+            <span id="global-serp-url">https://yoursite.ir</span> › محصولات و شعبات
+          </div>
+          <!-- Big Blue Title (همان نوشته بزرگ تر بالاییش) -->
+          <div id="global-serp-title" style="font-size: 1.25rem; color: #1a0dab; font-weight: 600; line-height: 1.35; margin-bottom: 4px; cursor: pointer;">
+            قنادی فاخر | سفارش آنلاین شیرینی، کیک و دسرهای نفیس
+          </div>
+          <!-- Meta Description -->
+          <div id="global-serp-desc" style="font-size: 0.86rem; color: #4d5156; line-height: 1.5; max-width: 780px;">
+            سفارش آنلاین انواع شیرینی فرانسوی، کیک‌های اختصاصی تولد و عروسی، باقلوا و تشریفات مجالس با تازه‌ترین مواد اولیه و بسته‌بندی لوکس.
+          </div>
+        </div>
+      </div>
+
+      <!-- SEO Form Grid -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 1.5rem;">
+        <!-- Card 1: Title & Description -->
+        <div class="profile-card" style="margin: 0;">
+          <h4 style="font-size: 1.05rem; font-weight: 800; color: #78350F; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem;">
+            <span>📝</span> عناوین و توضیحات متا
+          </h4>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                <label style="font-size: 0.85rem; font-weight: 700;">عنوان اصلی سایت (Site Meta Title):</label>
+                <span id="global-title-counter" style="font-size: 0.72rem; color: #666;">۰/۶۰ کاراکتر</span>
+              </div>
+              <input type="text" id="seo-site-title" oninput="updateGlobalSerpPreview()" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1.5px solid #ccc; font-family: inherit;">
+              <small style="font-size: 0.72rem; color: #666;">این عنوان همان نوشته بزرگ‌تر بالایی است که در تب مرورگر و نتایج گوگل ظاهر می‌شود.</small>
+            </div>
+
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">الگوی عنوان صفحات (Title Template):</label>
+              <input type="text" id="seo-title-template" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1.5px solid #ccc; font-family: inherit;" placeholder="%title% | قنادی فاخر">
+              <small style="font-size: 0.72rem; color: #666;">عبارت %title% با نام هر صفحه یا نام هر محصول جایگزین خواهد شد.</small>
+            </div>
+
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                <label style="font-size: 0.85rem; font-weight: 700;">توضیحات متای سراسری (Meta Description):</label>
+                <span id="global-desc-counter" style="font-size: 0.72rem; color: #666;">۰/۱۶۰ کاراکتر</span>
+              </div>
+              <textarea id="seo-meta-desc" rows="3" oninput="updateGlobalSerpPreview()" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1.5px solid #ccc; font-family: inherit;"></textarea>
+              <small style="font-size: 0.72rem; color: #666;">بازه طلایی گوگل بین ۱۲۰ تا ۱۶۰ کاراکتر است تا در نتایج بریده نشود.</small>
+            </div>
+
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">کلمات کلیدی اصلی وب‌سایت (Focus Meta Keywords):</label>
+              <input type="text" id="seo-meta-keywords" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1.5px solid #ccc; font-family: inherit;" placeholder="شیرینی فرانسوی, سفارش کیک, قنادی لوکس, باقلوا">
+              <small style="font-size: 0.72rem; color: #666;">کلمات کلیدی کوتاه که موضوعات اصلی سایت را با ویرگول جدا می‌کنند.</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Technical SEO & Open Graph -->
+        <div class="profile-card" style="margin: 0;">
+          <h4 style="font-size: 1.05rem; font-weight: 800; color: #78350F; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem;">
+            <span>⚡</span> سئوی تکنیکال و شبکه‌های اجتماعی (Social Cards)
+          </h4>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">دامنه اصلی و آدرس کانونیکال (Canonical Base URL):</label>
+              <input type="url" id="seo-canonical-url" oninput="updateGlobalSerpPreview()" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1.5px solid #ccc; font-family: inherit; direction: ltr;" placeholder="https://yoursite.ir">
+              <small style="font-size: 0.72rem; color: #666;">برای جلوگیری از خطای محتوای تکراری (Duplicate Content) در موتورهای جستجو.</small>
+            </div>
+
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">کد تایید گوگل سرچ کنسول (Google Site Verification):</label>
+              <input type="text" id="seo-google-verify" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1.5px solid #ccc; font-family: inherit; direction: ltr;" placeholder="کد google-site-verification...">
+              <small style="font-size: 0.72rem; color: #666;">کد متاتگ سرچ کنسول جهت ثبت و دریافت گزارش ایندکس صفحات در گوگل.</small>
+            </div>
+
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">تصویر کارت اشتراک‌گذاری شبکه‌های اجتماعی (OG Image URL):</label>
+              <input type="text" id="seo-og-image" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1.5px solid #ccc; font-family: inherit; direction: ltr;" placeholder="assets/images/pastry_hero.jpg">
+              <small style="font-size: 0.72rem; color: #666;">تصویری که هنگام ارسال لینک سایت در تلگرام، واتساپ یا اینستاگرام به نمایش درمی‌آید.</small>
+            </div>
+
+            <div>
+              <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.3rem;">داده‌های ساختاریافته قنادی (Schema.org Bakery JSON-LD):</label>
+              <div style="background: #F3F4F6; padding: 0.75rem; border-radius: 10px; font-family: monospace; font-size: 0.72rem; direction: ltr; max-height: 90px; overflow-y: auto; color: #1F2937;">
+                {
+                  "@context": "https://schema.org",
+                  "@type": "Bakery",
+                  "name": "قنادی فاخر",
+                  "priceRange": "$$"
+                }
+              </div>
+              <small style="font-size: 0.72rem; color: #059669; font-weight: 700;">✓ اسکیما مارک‌آپ به صورت خودکار در تمام صفحات سایت تزریق می‌شود.</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1.5rem; text-align: left;">
+        <button onclick="handleSaveSiteSEO()" class="btn-checkout-now" style="width: auto; padding: 0.75rem 2.2rem; font-size: 0.95rem; background: #059669;">
+          💾 ذخیره تنظیمات سئوی سراسری
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <!-- Add Product Modal -->
+  <div class="admin-custom-popup" id="add-prod-modal" style="display: none; position: fixed; inset: 0; background: rgba(30,27,24,0.65); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 1.5rem; opacity: 1 !important; visibility: visible !important;">
+    <div style="background: #fff; border-radius: 24px; padding: 2rem; max-width: 520px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">افزودن محصول جدید به منو</h3>
+        <button onclick="closeAddProductModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); submitNewProduct();" style="display: flex; flex-direction: column; gap: 0.9rem;">
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">نام محصول:</label>
+          <input type="text" id="new-prod-title" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">دسته‌بندی:</label>
+          <select id="new-prod-category" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;"></select>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">قیمت به تومان:</label>
+          <input type="number" id="new-prod-price" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">واحد فروش (کیلوگرم، اسلایس، جعبه):</label>
+          <input type="text" id="new-prod-unit" placeholder="مثال: کیلوگرم" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">عکس محصول:</label>
+          <div style="display: flex; gap: 0.8rem; align-items: center;">
+            <div id="new-prod-img-preview" style="width: 60px; height: 60px; border-radius: 10px; background: #FAF5EB; border: 1.5px dashed #D97706; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+              <span style="font-size: 0.65rem; color: #B45309; text-align: center; font-weight: 700;">پیش‌نمایش</span>
+            </div>
+            <div style="flex: 1;">
+              <input type="file" id="new-prod-file" accept="image/*" style="display: none;" onchange="handleNewProdImageFile(this)">
+              <button type="button" onclick="document.getElementById('new-prod-file').click()" class="btn-view-all" style="font-size: 0.78rem; padding: 0.4rem 0.8rem; width: 100%; border: 1px solid #D97706; color: #B45309; background: #FFFBEB;">
+                📁 انتخاب عکس از کامپیوتر...
+              </button>
+              <input type="text" id="new-prod-image-url" placeholder="یا لینک تصویر اینترنتی..." oninput="handleNewProdImageUrl(this.value)" style="width: 100%; padding: 0.45rem 0.7rem; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; font-size: 0.78rem; margin-top: 0.35rem; direction: ltr;">
+            </div>
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">توضیحات کوتاه:</label>
+          <textarea id="new-prod-desc" rows="2" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;"></textarea>
+        </div>
+
+        <!-- Product SEO Settings Section -->
+        <div style="border-top: 1.5px dashed #D97706; padding-top: 1rem; margin-top: 0.5rem; background: #FFFDF9; padding: 1.2rem; border-radius: 16px; border: 1px solid #FDE68A;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 800; color: #92400E; display: flex; align-items: center; gap: 0.4rem; margin: 0;">
+              <span>🔍</span> تنظیمات سئو و متادیتا (Google SEO)
+            </h4>
+            <span style="font-size: 0.72rem; color: #B45309; background: #FEF3C7; padding: 2px 8px; border-radius: 6px; font-weight: 700;">بهینه‌سازی محصول در گوگل</span>
+          </div>
+
+          <!-- Google SERP Live Preview for Add Product -->
+          <div style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 0.85rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            <div style="font-size: 0.68rem; color: #6B7280; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
+              <span style="display: inline-block; width: 14px; height: 14px; background: #D97706; border-radius: 50%; color: #fff; font-size: 9px; text-align: center; line-height: 14px;">G</span>
+              <span>پیش‌نمایش در نتایج جستجوی گوگل (Google SERP Snippet)</span>
+            </div>
+            <!-- Breadcrumb URL & Slug -->
+            <div style="font-size: 0.75rem; color: #202124; direction: ltr; text-align: left; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              https://yoursite.ir › محصولات › <span id="add-prod-serp-slug" style="color: #5F6368; font-weight: 600;">slug</span>
+            </div>
+            <!-- Big Blue Title (همان نوشته بزرگ تر بالاییش) -->
+            <div id="add-prod-serp-title" style="font-size: 1.05rem; color: #1a0dab; font-weight: 600; line-height: 1.3; cursor: pointer; text-decoration: none; margin-bottom: 3px;">
+              نام محصول | قنادی فاخر
+            </div>
+            <!-- Meta Description snippet -->
+            <div id="add-prod-serp-desc" style="font-size: 0.78rem; color: #4d5156; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+              توضیحات متای محصول در اینجا نمایش داده خواهد شد. این متن همان چکیده‌ای است که کاربران در جستجوی گوگل می‌خوانند.
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Big SEO Title (نوشته بزرگ تر بالاییش) -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                <label style="font-size: 0.82rem; font-weight: 700; color: #78350F;">تیتر سئو (نوشته بزرگ‌تر بالایی در گوگل):</label>
+                <span style="font-size: 0.7rem; color: #888;" id="add-prod-title-counter">۰/۶۰ کاراکتر</span>
+              </div>
+              <input type="text" id="new-prod-seo-title" placeholder="مثال: خرید کروسان پسته‌ای تازه و فرانسوی | قنادی فاخر" oninput="updateNewProdSerpPreview()" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem;">
+              <small style="font-size: 0.7rem; color: #888;">اگر خالی بگذارید، از عنوان خود محصول استفاده خواهد شد (طول استاندارد: بین ۵۰ تا ۶۰ کاراکتر).</small>
+            </div>
+
+            <!-- Slug -->
+            <div>
+              <label style="font-size: 0.82rem; font-weight: 700; color: #78350F; display: block; margin-bottom: 0.2rem;">اسلاگ آدرس (URL Slug انگلیسی یا فارسی):</label>
+              <input type="text" id="new-prod-seo-slug" placeholder="مثال: pistachio-croissant" oninput="updateNewProdSerpPreview()" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem; direction: ltr;">
+              <small style="font-size: 0.7rem; color: #888;">نامک یا دنباله آدرس اینترنتی صفحه این محصول در مرورگر.</small>
+            </div>
+
+            <!-- Meta Description -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                <label style="font-size: 0.82rem; font-weight: 700; color: #78350F;">توضیحات متا (Meta Description):</label>
+                <span style="font-size: 0.7rem; color: #888;" id="add-prod-desc-counter">۰/۱۶۰ کاراکتر</span>
+              </div>
+              <textarea id="new-prod-seo-desc" rows="2" placeholder="چکیده کوتاه و جذاب جهت ترغیب به کلیک در نتایج جستجو..." oninput="updateNewProdSerpPreview()" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem;"></textarea>
+              <small style="font-size: 0.7rem; color: #888;">طول بهینه برای جلوگیری از بریده شدن متن در گوگل: بین ۱۲۰ تا ۱۶۰ کاراکتر.</small>
+            </div>
+
+            <!-- Focus Keywords / چند کلمه کوتاه که محصول رو بگه -->
+            <div>
+              <label style="font-size: 0.82rem; font-weight: 700; color: #78350F; display: block; margin-bottom: 0.2rem;">کلمات کلیدی کوتاه محصول (Focus Keywords / Tags):</label>
+              <input type="text" id="new-prod-seo-keywords" placeholder="مثال: کروسان شکلاتی, شیرینی فرانسوی, نان صبحانه" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem;">
+              <small style="font-size: 0.7rem; color: #888;">چند کلمه کوتاه کلیدی که محصول را توصیف می‌کنند (با ویرگول جدا کنید).</small>
+            </div>
+
+            <!-- Image Alt Text -->
+            <div>
+              <label style="font-size: 0.82rem; font-weight: 700; color: #78350F; display: block; margin-bottom: 0.2rem;">متن جایگزین عکس برای گوگل (Image Alt Text):</label>
+              <input type="text" id="new-prod-seo-alt" placeholder="مثال: عکس کروسان مغزدار با کرم پسته تازه قنادی فاخر" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem;">
+              <small style="font-size: 0.7rem; color: #888;">توصیف تصویر برای موتور جستجوی تصاویر گوگل و بهبود رتبه سئو.</small>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-checkout-now" style="margin-top: 0.5rem;">ذخیره و انتشار محصول</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Product Modal (Full Product Editing) -->
+  <div class="admin-custom-popup" id="edit-prod-modal" style="display: none; position: fixed; inset: 0; background: rgba(30,27,24,0.65); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 1.5rem; opacity: 1 !important; visibility: visible !important;">
+    <div style="background: #fff; border-radius: 24px; padding: 2rem; max-width: 540px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">ویرایش کامل اطلاعات محصول</h3>
+        <button onclick="closeEditProductModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); submitEditProduct();" style="display: flex; flex-direction: column; gap: 0.9rem;">
+        <input type="hidden" id="edit-prod-id">
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">نام محصول:</label>
+          <input type="text" id="edit-prod-title" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">دسته‌بندی:</label>
+          <select id="edit-prod-category" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;"></select>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">قیمت به تومان (حفظ قیمت قبلی یا ویرایش):</label>
+          <input type="number" id="edit-prod-price" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">واحد فروش (کیلوگرم، اسلایس، جعبه):</label>
+          <input type="text" id="edit-prod-unit" placeholder="مثال: کیلوگرم" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">عکس محصول:</label>
+          <div style="display: flex; gap: 0.8rem; align-items: center;">
+            <div id="edit-prod-img-preview" style="width: 60px; height: 60px; border-radius: 10px; background: #FAF5EB; border: 1.5px dashed #D97706; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+              <span style="font-size: 0.65rem; color: #B45309; text-align: center; font-weight: 700;">عکس فعلی</span>
+            </div>
+            <div style="flex: 1;">
+              <input type="file" id="edit-prod-file" accept="image/*" style="display: none;" onchange="handleEditProdImageFile(this)">
+              <button type="button" onclick="document.getElementById('edit-prod-file').click()" class="btn-view-all" style="font-size: 0.78rem; padding: 0.4rem 0.8rem; width: 100%; border: 1px solid #D97706; color: #B45309; background: #FFFBEB;">
+                📁 آپلود یا تغییر عکس محصول...
+              </button>
+              <input type="text" id="edit-prod-image-url" placeholder="یا لینک تصویر..." oninput="handleEditProdImageUrl(this.value)" style="width: 100%; padding: 0.45rem 0.7rem; border-radius: 8px; border: 1px solid #ccc; font-family: inherit; font-size: 0.78rem; margin-top: 0.35rem; direction: ltr;">
+            </div>
+          </div>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">توضیحات کوتاه:</label>
+          <textarea id="edit-prod-desc" rows="2" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;"></textarea>
+        </div>
+
+        <!-- Product SEO Settings Section (Edit Modal) -->
+        <div style="border-top: 1.5px dashed #D97706; padding-top: 1rem; margin-top: 0.5rem; background: #FFFDF9; padding: 1.2rem; border-radius: 16px; border: 1px solid #FDE68A;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.8rem;">
+            <h4 style="font-size: 0.95rem; font-weight: 800; color: #92400E; display: flex; align-items: center; gap: 0.4rem; margin: 0;">
+              <span>🔍</span> تنظیمات سئو و متادیتا (Google SEO)
+            </h4>
+            <span style="font-size: 0.72rem; color: #B45309; background: #FEF3C7; padding: 2px 8px; border-radius: 6px; font-weight: 700;">بهینه‌سازی محصول در گوگل</span>
+          </div>
+
+          <!-- Google SERP Live Preview for Edit Product -->
+          <div style="background: #fff; border: 1px solid #E5E7EB; border-radius: 12px; padding: 0.85rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+            <div style="font-size: 0.68rem; color: #6B7280; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.3rem;">
+              <span style="display: inline-block; width: 14px; height: 14px; background: #D97706; border-radius: 50%; color: #fff; font-size: 9px; text-align: center; line-height: 14px;">G</span>
+              <span>پیش‌نمایش در نتایج جستجوی گوگل (Google SERP Snippet)</span>
+            </div>
+            <!-- Breadcrumb URL & Slug -->
+            <div style="font-size: 0.75rem; color: #202124; direction: ltr; text-align: left; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+              https://yoursite.ir › محصولات › <span id="edit-prod-serp-slug" style="color: #5F6368; font-weight: 600;">slug</span>
+            </div>
+            <!-- Big Blue Title (همان نوشته بزرگ تر بالاییش) -->
+            <div id="edit-prod-serp-title" style="font-size: 1.05rem; color: #1a0dab; font-weight: 600; line-height: 1.3; cursor: pointer; text-decoration: none; margin-bottom: 3px;">
+              نام محصول | قنادی فاخر
+            </div>
+            <!-- Meta Description snippet -->
+            <div id="edit-prod-serp-desc" style="font-size: 0.78rem; color: #4d5156; line-height: 1.45; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+              توضیحات متای محصول در اینجا نمایش داده خواهد شد. این متن همان چکیده‌ای است که کاربران در جستجوی گوگل می‌خوانند.
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Big SEO Title (نوشته بزرگ تر بالاییش) -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                <label style="font-size: 0.82rem; font-weight: 700; color: #78350F;">تیتر سئو (نوشته بزرگ‌تر بالایی در گوگل):</label>
+                <span style="font-size: 0.7rem; color: #888;" id="edit-prod-title-counter">۰/۶۰ کاراکتر</span>
+              </div>
+              <input type="text" id="edit-prod-seo-title" placeholder="مثال: خرید کروسان پسته‌ای تازه و فرانسوی | قنادی فاخر" oninput="updateEditProdSerpPreview()" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem;">
+              <small style="font-size: 0.7rem; color: #888;">اگر خالی بگذارید، از عنوان خود محصول استفاده خواهد شد (طول استاندارد: بین ۵۰ تا ۶۰ کاراکتر).</small>
+            </div>
+
+            <!-- Slug -->
+            <div>
+              <label style="font-size: 0.82rem; font-weight: 700; color: #78350F; display: block; margin-bottom: 0.2rem;">اسلاگ آدرس (URL Slug انگلیسی یا فارسی):</label>
+              <input type="text" id="edit-prod-seo-slug" placeholder="مثال: pistachio-croissant" oninput="updateEditProdSerpPreview()" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem; direction: ltr;">
+              <small style="font-size: 0.7rem; color: #888;">نامک یا دنباله آدرس اینترنتی صفحه این محصول در مرورگر.</small>
+            </div>
+
+            <!-- Meta Description -->
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+                <label style="font-size: 0.82rem; font-weight: 700; color: #78350F;">توضیحات متا (Meta Description):</label>
+                <span style="font-size: 0.7rem; color: #888;" id="edit-prod-desc-counter">۰/۱۶۰ کاراکتر</span>
+              </div>
+              <textarea id="edit-prod-seo-desc" rows="2" placeholder="چکیده کوتاه و جذاب جهت ترغیب به کلیک در نتایج جستجو..." oninput="updateEditProdSerpPreview()" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem;"></textarea>
+              <small style="font-size: 0.7rem; color: #888;">طول بهینه برای جلوگیری از بریده شدن متن در گوگل: بین ۱۲۰ تا ۱۶۰ کاراکتر.</small>
+            </div>
+
+            <!-- Focus Keywords / چند کلمه کوتاه که محصول رو بگه -->
+            <div>
+              <label style="font-size: 0.82rem; font-weight: 700; color: #78350F; display: block; margin-bottom: 0.2rem;">کلمات کلیدی کوتاه محصول (Focus Keywords / Tags):</label>
+              <input type="text" id="edit-prod-seo-keywords" placeholder="مثال: کروسان شکلاتی, شیرینی فرانسوی, نان صبحانه" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem;">
+              <small style="font-size: 0.7rem; color: #888;">چند کلمه کوتاه کلیدی که محصول را توصیف می‌کنند (با ویرگول جدا کنید).</small>
+            </div>
+
+            <!-- Image Alt Text -->
+            <div>
+              <label style="font-size: 0.82rem; font-weight: 700; color: #78350F; display: block; margin-bottom: 0.2rem;">متن جایگزین عکس برای گوگل (Image Alt Text):</label>
+              <input type="text" id="edit-prod-seo-alt" placeholder="مثال: عکس کروسان مغزدار با کرم پسته تازه قنادی فاخر" style="width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #D1D5DB; font-family: inherit; font-size: 0.85rem;">
+              <small style="font-size: 0.7rem; color: #888;">توصیف تصویر برای موتور جستجوی تصاویر گوگل و بهبود رتبه سئو.</small>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-checkout-now" style="margin-top: 0.5rem;">ذخیره تغییرات محصول</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Admin Modal (CEO exclusive) -->
+  <div class="admin-custom-popup" id="add-admin-modal" style="display: none; position: fixed; inset: 0; background: rgba(30,27,24,0.65); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 1.5rem; opacity: 1 !important; visibility: visible !important;">
+    <div style="background: #fff; border-radius: 24px; padding: 2rem; max-width: 480px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">افزودن ادمین جدید توسط CEO</h3>
+        <button onclick="closeAddAdminModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); submitNewAdmin();" style="display: flex; flex-direction: column; gap: 0.9rem;">
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">نام کاربری (لاتین بدون فاصله):</label>
+          <input type="text" id="new-admin-user" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; direction: ltr;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">نام و نام خانوادگی:</label>
+          <input type="text" id="new-admin-name" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">رمز عبور اولیه:</label>
+          <input type="password" id="new-admin-pass" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; direction: ltr;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">شماره همراه:</label>
+          <input type="tel" id="new-admin-phone" placeholder="۰۹۱۲..." style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; direction: ltr;">
+        </div>
+        <button type="submit" class="btn-checkout-now" style="margin-top: 0.5rem; background: #C2410C;">ایجاد حساب ادمین</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit User Modal (CEO exclusive for editing username & details) -->
+  <div class="admin-custom-popup" id="edit-user-modal" style="display: none; position: fixed; inset: 0; background: rgba(30,27,24,0.65); backdrop-filter: blur(8px); z-index: 99999; align-items: center; justify-content: center; padding: 1.5rem; opacity: 1 !important; visibility: visible !important;">
+    <div style="background: #fff; border-radius: 24px; padding: 2rem; max-width: 480px; width: 100%; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+        <h3 style="font-size: 1.2rem; font-weight: 800;">ویرایش مشخصات و نام کاربری توسط CEO</h3>
+        <button onclick="closeEditUserModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); submitEditUser();" style="display: flex; flex-direction: column; gap: 0.9rem;">
+        <input type="hidden" id="edit-user-old-username">
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">نام کاربری (جهت ورود به سیستم):</label>
+          <input type="text" id="edit-user-username" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; direction: ltr;" required>
+          <small style="font-size: 0.72rem; color: #666;">لاتین و بدون فاصله</small>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">نام و عنوان نمایشی:</label>
+          <input type="text" id="edit-user-name" style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;" required>
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">شماره همراه:</label>
+          <input type="tel" id="edit-user-phone" placeholder="۰۹۱۲..." style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; direction: ltr;">
+        </div>
+        <div>
+          <label style="font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 0.2rem;">رمز عبور جدید (اختیاری):</label>
+          <input type="password" id="edit-user-pass" placeholder="برای عدم تغییر خالی بگذارید..." style="width: 100%; padding: 0.7rem; border-radius: 10px; border: 1px solid #ccc; font-family: inherit; direction: ltr;">
+        </div>
+        <button type="submit" class="btn-checkout-now" style="margin-top: 0.5rem; background: #C2410C;">ذخیره تغییرات حساب</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/security.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/shared-nav.js"></script>
+
+  <script>
+    function checkCurrentAdminAuth() {
+      const isAuth = sessionStorage.getItem('artisanal_pastry_admin_auth') === 'true';
+      const curUser = window.pastryStore.getCurrentUser();
+
+      if (!isAuth || !curUser) {
+        document.getElementById('admin-auth-modal').style.display = 'flex';
+      } else {
+        document.getElementById('admin-auth-modal').style.display = 'none';
+        applyUserRoleUI(curUser);
+        loadAdminData();
+      }
+    }
+
+    function handleDirectLogin() {
+      const user = document.getElementById('admin-direct-username').value.trim();
+      const pass = document.getElementById('admin-direct-password').value.trim();
+      const errBox = document.getElementById('admin-login-error');
+
+      const res = window.pastryStore.authenticateAdmin(user, pass);
+      if (res.success) {
+        document.getElementById('admin-auth-modal').style.display = 'none';
+        applyUserRoleUI(res.user);
+        loadAdminData();
+      } else {
+        errBox.textContent = res.error || 'اطلاعات ورود صحیح نیست.';
+        errBox.style.display = 'block';
+      }
+    }
+
+    function applyUserRoleUI(user) {
+      const badge = document.getElementById('current-user-badge-header');
+      const ceoTab = document.getElementById('tab-btn-users');
+      const welcomeMsg = document.getElementById('admin-welcome-msg');
+      const cleanName = (user.name || '').replace(/\s*\(CEO\)/gi, '').trim() || 'مدیر ارشد و موسس';
+
+      if (user.role === 'ceo') {
+        badge.className = 'role-badge ceo';
+        badge.innerHTML = cleanName;
+        ceoTab.style.display = 'inline-flex';
+        welcomeMsg.innerHTML = `خوش آمدید <strong>${cleanName}</strong>؛ شما به عنوان مدیر ارشد دسترسی کامل به کاتالوگ، سفارشات و مدیریت تمام بخش‌ها دارید.`;
+      } else {
+        badge.className = 'role-badge admin';
+        badge.innerHTML = cleanName;
+        ceoTab.style.display = 'none';
+        welcomeMsg.innerHTML = `خوش آمدید <strong>${cleanName}</strong>؛ دسترسی مدیریت محصولات، تغییر قیمت‌ها و بررسی سفارشات فعال است.`;
+      }
+
+      // Populate profile form
+      document.getElementById('prof-username').value = user.username;
+      document.getElementById('prof-role').value = user.role === 'ceo' ? 'مدیر ارشد و موسس' : 'مدیر داخلی و شعبات';
+      document.getElementById('prof-name').value = cleanName;
+    }
+
+    function logoutAdmin() {
+      window.pastryStore.logout();
+      window.location.href = 'index.html';
+    }
+
+    function switchAdminTab(tabName) {
+      document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      document.getElementById('tab-content-products').style.display = tabName === 'products' ? 'block' : 'none';
+      document.getElementById('tab-content-cakes').style.display = tabName === 'cakes' ? 'block' : 'none';
+      document.getElementById('tab-content-events').style.display = tabName === 'events' ? 'block' : 'none';
+      document.getElementById('tab-content-profile').style.display = tabName === 'profile' ? 'block' : 'none';
+      document.getElementById('tab-content-seo').style.display = tabName === 'seo' ? 'block' : 'none';
+      document.getElementById('tab-content-users').style.display = tabName === 'users' ? 'block' : 'none';
+
+      if (tabName === 'seo') loadAdminSEOData();
+    }
+
+    function loadAdminData() {
+      const categories = window.pastryStore.getCategories();
+      const products = window.pastryStore.getProducts();
+      const cakeOrders = window.pastryStore.getCakeOrders();
+      const eventOrders = window.pastryStore.getCustomOrders();
+      const users = window.pastryStore.getAdminUsers();
+
+      // Badges
+      document.getElementById('count-products-badge').textContent = new Intl.NumberFormat('fa-IR').format(products.length);
+      document.getElementById('count-cakes-badge').textContent = new Intl.NumberFormat('fa-IR').format(cakeOrders.length);
+      document.getElementById('count-events-badge').textContent = new Intl.NumberFormat('fa-IR').format(eventOrders.length);
+      document.getElementById('count-users-badge').textContent = new Intl.NumberFormat('fa-IR').format(users.length);
+
+      // Populate Category Filters
+      const catFilter = document.getElementById('admin-cat-filter');
+      const newCatSelect = document.getElementById('new-prod-category');
+      catFilter.innerHTML = '<option value="all">همه ۱۲ دسته‌بندی</option>' + categories.map(c => `
+        <option value="${c.id}">${c.name}</option>
+      `).join('');
+      newCatSelect.innerHTML = categories.map(c => `
+        <option value="${c.id}">${c.name}</option>
+      `).join('');
+
+      renderProductsTable();
+      renderCakeOrdersTable();
+      renderEventOrdersTable();
+      renderUsersTable();
+      loadAdminSEOData();
+
+      // Populate Easter Egg Words input
+      const eggInput = document.getElementById('easter-egg-words-input');
+      if (eggInput && window.pastryStore) {
+        eggInput.value = window.pastryStore.getEasterEggWords().join(', ');
+      }
+    }
+
+    // --- SEO Management Logic ---
+    function loadAdminSEOData() {
+      if (!window.pastryStore || !window.pastryStore.getSiteSEO) return;
+      const seo = window.pastryStore.getSiteSEO();
+      const siteTitleInput = document.getElementById('seo-site-title');
+      const titleTemplateInput = document.getElementById('seo-title-template');
+      const metaDescInput = document.getElementById('seo-meta-desc');
+      const metaKeywordsInput = document.getElementById('seo-meta-keywords');
+      const canonicalInput = document.getElementById('seo-canonical-url');
+      const googleVerifyInput = document.getElementById('seo-google-verify');
+      const ogImageInput = document.getElementById('seo-og-image');
+
+      if (siteTitleInput) siteTitleInput.value = seo.siteTitle || '';
+      if (titleTemplateInput) titleTemplateInput.value = seo.titleTemplate || '';
+      if (metaDescInput) metaDescInput.value = seo.metaDescription || '';
+      if (metaKeywordsInput) metaKeywordsInput.value = (seo.metaKeywords || []).join(', ');
+      if (canonicalInput) canonicalInput.value = seo.canonicalUrl || '';
+      if (googleVerifyInput) googleVerifyInput.value = seo.googleSiteVerification || '';
+      if (ogImageInput) ogImageInput.value = seo.ogImage || '';
+
+      updateGlobalSerpPreview();
+    }
+
+    function handleSaveSiteSEO() {
+      const siteTitle = document.getElementById('seo-site-title').value.trim();
+      const titleTemplate = document.getElementById('seo-title-template').value.trim();
+      const metaDescription = document.getElementById('seo-meta-desc').value.trim();
+      const metaKeywords = document.getElementById('seo-meta-keywords').value.split(/[,،]/).map(k => k.trim()).filter(Boolean);
+      const canonicalUrl = document.getElementById('seo-canonical-url').value.trim();
+      const googleSiteVerification = document.getElementById('seo-google-verify').value.trim();
+      const ogImage = document.getElementById('seo-og-image').value.trim();
+
+      window.pastryStore.saveSiteSEO({
+        siteTitle,
+        titleTemplate,
+        metaDescription,
+        metaKeywords,
+        canonicalUrl,
+        googleSiteVerification,
+        ogImage
+      });
+
+      updateGlobalSerpPreview();
+      window.showLuxuryToast('ذخیره موفق سئو', 'تنظیمات سئوی سراسری سایت با موفقیت ذخیره و در تمام صفحات فعال شد.', 'success');
+    }
+
+    function updateGlobalSerpPreview() {
+      const title = document.getElementById('seo-site-title')?.value.trim() || 'قنادی فاخر | سفارش آنلاین شیرینی، کیک و دسرهای نفیس';
+      const desc = document.getElementById('seo-meta-desc')?.value.trim() || 'سفارش آنلاین انواع شیرینی فرانسوی، کیک‌های اختصاصی تولد و عروسی با تازه‌ترین مواد اولیه.';
+      const url = document.getElementById('seo-canonical-url')?.value.trim() || 'https://yoursite.ir';
+
+      const serpTitle = document.getElementById('global-serp-title');
+      const serpDesc = document.getElementById('global-serp-desc');
+      const serpUrl = document.getElementById('global-serp-url');
+      const titleCounter = document.getElementById('global-title-counter');
+      const descCounter = document.getElementById('global-desc-counter');
+
+      if (serpTitle) serpTitle.textContent = title;
+      if (serpDesc) serpDesc.textContent = desc;
+      if (serpUrl) serpUrl.textContent = url;
+      if (titleCounter) titleCounter.textContent = `${title.length}/۶۰ کاراکتر`;
+      if (descCounter) descCounter.textContent = `${desc.length}/۱۶۰ کاراکتر`;
+    }
+
+    function updateNewProdSerpPreview() {
+      const prodName = document.getElementById('new-prod-title')?.value.trim() || 'نام محصول';
+      const seoTitle = document.getElementById('new-prod-seo-title')?.value.trim() || `${prodName} | قنادی فاخر`;
+      const seoSlug = document.getElementById('new-prod-seo-slug')?.value.trim() || prodName.toLowerCase().replace(/[\s\W-]+/g, '-');
+      const seoDesc = document.getElementById('new-prod-seo-desc')?.value.trim() || document.getElementById('new-prod-desc')?.value.trim() || 'توضیحات و مشخصات شیرینی تازه پخته شده قنادی.';
+
+      const titleEl = document.getElementById('add-prod-serp-title');
+      const slugEl = document.getElementById('add-prod-serp-slug');
+      const descEl = document.getElementById('add-prod-serp-desc');
+      const titleCounter = document.getElementById('add-prod-title-counter');
+      const descCounter = document.getElementById('add-prod-desc-counter');
+
+      if (titleEl) titleEl.textContent = seoTitle;
+      if (slugEl) slugEl.textContent = seoSlug;
+      if (descEl) descEl.textContent = seoDesc;
+      if (titleCounter) titleCounter.textContent = `${seoTitle.length}/۶۰ کاراکتر`;
+      if (descCounter) descCounter.textContent = `${seoDesc.length}/۱۶۰ کاراکتر`;
+    }
+
+    function updateEditProdSerpPreview() {
+      const prodName = document.getElementById('edit-prod-title')?.value.trim() || 'نام محصول';
+      const seoTitle = document.getElementById('edit-prod-seo-title')?.value.trim() || `${prodName} | قنادی فاخر`;
+      const seoSlug = document.getElementById('edit-prod-seo-slug')?.value.trim() || prodName.toLowerCase().replace(/[\s\W-]+/g, '-');
+      const seoDesc = document.getElementById('edit-prod-seo-desc')?.value.trim() || document.getElementById('edit-prod-desc')?.value.trim() || 'توضیحات و مشخصات شیرینی تازه پخته شده قنادی.';
+
+      const titleEl = document.getElementById('edit-prod-serp-title');
+      const slugEl = document.getElementById('edit-prod-serp-slug');
+      const descEl = document.getElementById('edit-prod-serp-desc');
+      const titleCounter = document.getElementById('edit-prod-title-counter');
+      const descCounter = document.getElementById('edit-prod-desc-counter');
+
+      if (titleEl) titleEl.textContent = seoTitle;
+      if (slugEl) slugEl.textContent = seoSlug;
+      if (descEl) descEl.textContent = seoDesc;
+      if (titleCounter) titleCounter.textContent = `${seoTitle.length}/۶۰ کاراکتر`;
+      if (descCounter) descCounter.textContent = `${seoDesc.length}/۱۶۰ کاراکتر`;
+    }
+
+    // Image state for product modals
+    let newProductImageBase64 = '';
+    let editProductImageBase64 = '';
+
+    function handleNewProdImageFile(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          newProductImageBase64 = e.target.result;
+          document.getElementById('new-prod-image-url').value = '';
+          const preview = document.getElementById('new-prod-img-preview');
+          if (preview) preview.innerHTML = `<img src="${newProductImageBase64}" style="width:100%; height:100%; object-fit:cover;">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleNewProdImageUrl(url) {
+      newProductImageBase64 = (url || '').trim();
+      const preview = document.getElementById('new-prod-img-preview');
+      if (!preview) return;
+      if (newProductImageBase64) {
+        preview.innerHTML = `<img src="${newProductImageBase64}" style="width:100%; height:100%; object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=\\'font-size:0.6rem; color:red;\\'>خطا</span>'">`;
+      } else {
+        preview.innerHTML = `<span style="font-size: 0.65rem; color: #B45309; text-align: center; font-weight: 700;">پیش‌نمایش</span>`;
+      }
+    }
+
+    function handleEditProdImageFile(input) {
+      if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          editProductImageBase64 = e.target.result;
+          document.getElementById('edit-prod-image-url').value = '';
+          const preview = document.getElementById('edit-prod-img-preview');
+          if (preview) preview.innerHTML = `<img src="${editProductImageBase64}" style="width:100%; height:100%; object-fit:cover;">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleEditProdImageUrl(url) {
+      editProductImageBase64 = (url || '').trim();
+      const preview = document.getElementById('edit-prod-img-preview');
+      if (!preview) return;
+      if (editProductImageBase64) {
+        preview.innerHTML = `<img src="${editProductImageBase64}" style="width:100%; height:100%; object-fit:cover;" onerror="this.parentElement.innerHTML='<span style=\\'font-size:0.6rem; color:red;\\'>خطا</span>'">`;
+      } else {
+        preview.innerHTML = `<span style="font-size: 0.65rem; color: #B45309; text-align: center; font-weight: 700;">عکس فعلی</span>`;
+      }
+    }
+
+    // 1. Products Table
+    function renderProductsTable() {
+      const tbody = document.getElementById('admin-products-tbody');
+      const query = document.getElementById('admin-prod-search').value.toLowerCase().trim();
+      const selectedCat = document.getElementById('admin-cat-filter').value;
+
+      let prods = window.pastryStore.getProducts();
+      if (selectedCat !== 'all') prods = prods.filter(p => p.categoryId === selectedCat);
+      if (query) prods = prods.filter(p => p.title.toLowerCase().includes(query));
+
+      const categories = window.pastryStore.getCategories();
+
+      tbody.innerHTML = prods.map(prod => {
+        const cat = categories.find(c => c.id === prod.categoryId);
+        return `
+          <tr style="cursor: pointer;" onclick="if(!event.target.closest('button, input')) openEditProductModal('${prod.id}')" title="برای ویرایش کامل کلیک کنید">
+            <td>
+              <div style="width: 48px; height: 48px; border-radius: 8px; overflow: hidden; background: #eee; cursor: pointer; border: 1px solid rgba(45,35,25,0.08);" onclick="openEditProductModal('${prod.id}')" title="کلیک برای ویرایش عکس">
+                ${prod.image ? `<img src="${prod.image}" style="width: 100%; height: 100%; object-fit: cover;">` : `
+                  <div style="width: 100%; height: 100%; background: #FAF5EB; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; color: var(--accent-gold); text-align: center; font-weight: 700; padding: 2px;">عکس محصول</div>
+                `}
+              </div>
+            </td>
+            <td>
+              <div style="font-weight: 800; color: var(--text-primary); cursor: pointer;" onclick="openEditProductModal('${prod.id}')" title="ویرایش کامل">${prod.title} <span style="font-size: 0.78rem; color: var(--accent-gold);">✏️</span></div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${prod.desc || ''}</div>
+            </td>
+            <td>
+              <span style="font-weight: 600; color: var(--accent-gold);">${cat ? cat.name : prod.categoryId}</span>
+            </td>
+            <td>${prod.weightUnit || 'کیلوگرم'}</td>
+            <td>
+              <input type="number" id="price-input-${prod.id}" value="${prod.price}" class="admin-price-input" onclick="event.stopPropagation()" title="تغییر سریع قیمت">
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <button class="btn-admin-action" style="background: #3B82F6; color: #fff;" onclick="event.stopPropagation(); openEditProductModal('${prod.id}')" title="ویرایش عکس، نام و توضیحات">✏️ ویرایش</button>
+                <button class="btn-admin-action btn-admin-save" onclick="event.stopPropagation(); saveUpdatedPrice('${prod.id}')">ذخیره قیمت</button>
+                <button class="btn-admin-action btn-admin-del" onclick="event.stopPropagation(); deleteProdItem('${prod.id}')">حذف</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function saveUpdatedPrice(prodId) {
+      const input = document.getElementById(`price-input-${prodId}`);
+      if (input) {
+        window.pastryStore.updateProductPrice(prodId, Number(input.value));
+        window.showLuxuryToast('قیمت به‌روزرسانی شد', 'قیمت جدید با موفقیت در فروشگاه اعمال گردید.', 'success');
+        loadAdminData();
+      }
+    }
+
+    function deleteProdItem(prodId) {
+      window.showLuxuryConfirm({
+        title: 'حذف محصول',
+        message: 'آیا از حذف این محصول از کاتالوگ فروشگاه اطمینان دارید؟',
+        confirmText: 'بله، حذف شود',
+        cancelText: 'انصراف',
+        isDanger: true,
+        onConfirm: () => {
+          window.pastryStore.deleteProduct(prodId);
+          loadAdminData();
+          window.showLuxuryToast('محصول حذف شد', 'محصول موردنظر با موفقیت از سیستم حذف گردید.', 'info');
+        }
+      });
+    }
+
+    function resetDataCatalog() {
+      window.showLuxuryConfirm({
+        title: 'بازگرداندن اطلاعات قبلی',
+        message: 'آیا مایلید تمام محصولات و اطلاعات کاتالوگ به داده‌های پیش‌فرض اولیه بازگردانده شوند؟',
+        confirmText: 'بله، بازگردانی شود',
+        cancelText: 'انصراف',
+        isDanger: true,
+        onConfirm: () => {
+          window.pastryStore.resetCatalogToDefault();
+          loadAdminData();
+          window.showLuxuryToast('بازگردانی اطلاعات', 'کاتالوگ و قیمت‌های محصولات با موفقیت بازگردانی شد.', 'success');
+        }
+      });
+    }
+
+    // Modal Add Product
+    function openAddProductModal() {
+      const m = document.getElementById('add-prod-modal');
+      if (m) m.style.display = 'flex';
+    }
+    function closeAddProductModal() {
+      const m = document.getElementById('add-prod-modal');
+      if (m) m.style.display = 'none';
+    }
+    function submitNewProduct() {
+      const title = document.getElementById('new-prod-title').value.trim();
+      const categoryId = document.getElementById('new-prod-category').value;
+      const price = Number(document.getElementById('new-prod-price').value);
+      const weightUnit = document.getElementById('new-prod-unit').value.trim();
+      const desc = document.getElementById('new-prod-desc').value.trim();
+
+      // Product SEO Fields
+      const seoTitle = document.getElementById('new-prod-seo-title').value.trim();
+      const seoSlug = document.getElementById('new-prod-seo-slug').value.trim();
+      const seoDescription = document.getElementById('new-prod-seo-desc').value.trim();
+      const seoKeywords = document.getElementById('new-prod-seo-keywords').value.trim();
+      const seoAlt = document.getElementById('new-prod-seo-alt').value.trim();
+
+      window.pastryStore.saveProduct({
+        title,
+        categoryId,
+        price,
+        weightUnit,
+        desc,
+        image: newProductImageBase64 || '',
+        isPlaceholder: !newProductImageBase64,
+        rating: 5.0,
+        badge: 'جدید',
+        seoTitle,
+        seoSlug,
+        seoDescription,
+        seoKeywords,
+        seoAlt
+      });
+
+      // Reset Form & SEO
+      document.getElementById('new-prod-title').value = '';
+      document.getElementById('new-prod-price').value = '';
+      document.getElementById('new-prod-unit').value = '';
+      document.getElementById('new-prod-desc').value = '';
+      document.getElementById('new-prod-image-url').value = '';
+      document.getElementById('new-prod-seo-title').value = '';
+      document.getElementById('new-prod-seo-slug').value = '';
+      document.getElementById('new-prod-seo-desc').value = '';
+      document.getElementById('new-prod-seo-keywords').value = '';
+      document.getElementById('new-prod-seo-alt').value = '';
+      newProductImageBase64 = '';
+      const preview = document.getElementById('new-prod-img-preview');
+      if (preview) preview.innerHTML = `<span style="font-size: 0.65rem; color: #B45309; text-align: center; font-weight: 700;">پیش‌نمایش</span>`;
+
+      closeAddProductModal();
+      loadAdminData();
+      window.showLuxuryToast('محصول جدید ثبت شد', 'محصول جدید با تنظیمات کامل سئو و تصویر با موفقیت ذخیره شد!', 'success');
+    }
+
+    // Modal Edit Product (Full Editing keeping price & SEO)
+    function openEditProductModal(prodId) {
+      const prod = window.pastryStore.getProductById(prodId);
+      if (!prod) return;
+
+      const categories = window.pastryStore.getCategories();
+      const catSelect = document.getElementById('edit-prod-category');
+      catSelect.innerHTML = categories.map(c => `
+        <option value="${c.id}" ${c.id === prod.categoryId ? 'selected' : ''}>${c.name}</option>
+      `).join('');
+
+      document.getElementById('edit-prod-id').value = prod.id;
+      document.getElementById('edit-prod-title').value = prod.title;
+      document.getElementById('edit-prod-price').value = prod.price; // Original price maintained!
+      document.getElementById('edit-prod-unit').value = prod.weightUnit || 'کیلوگرم';
+      document.getElementById('edit-prod-desc').value = prod.desc || '';
+      document.getElementById('edit-prod-image-url').value = (prod.image && !prod.image.startsWith('data:')) ? prod.image : '';
+
+      // Populate Product SEO Fields
+      document.getElementById('edit-prod-seo-title').value = prod.seoTitle || '';
+      document.getElementById('edit-prod-seo-slug').value = prod.seoSlug || '';
+      document.getElementById('edit-prod-seo-desc').value = prod.seoDescription || '';
+      document.getElementById('edit-prod-seo-keywords').value = prod.seoKeywords || '';
+      document.getElementById('edit-prod-seo-alt').value = prod.seoAlt || '';
+      updateEditProdSerpPreview();
+
+      editProductImageBase64 = prod.image || '';
+      const preview = document.getElementById('edit-prod-img-preview');
+      if (preview) {
+        if (editProductImageBase64) {
+          preview.innerHTML = `<img src="${editProductImageBase64}" style="width:100%; height:100%; object-fit:cover;">`;
+        } else {
+          preview.innerHTML = `<span style="font-size: 0.65rem; color: #B45309; text-align: center; font-weight: 700;">عکس فعلی</span>`;
+        }
+      }
+
+      const modal = document.getElementById('edit-prod-modal');
+      if (modal) modal.style.display = 'flex';
+    }
+
+    function closeEditProductModal() {
+      const modal = document.getElementById('edit-prod-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function submitEditProduct() {
+      const id = document.getElementById('edit-prod-id').value;
+      const title = document.getElementById('edit-prod-title').value.trim();
+      const categoryId = document.getElementById('edit-prod-category').value;
+      const price = Number(document.getElementById('edit-prod-price').value);
+      const weightUnit = document.getElementById('edit-prod-unit').value.trim();
+      const desc = document.getElementById('edit-prod-desc').value.trim();
+
+      // Product SEO Fields
+      const seoTitle = document.getElementById('edit-prod-seo-title').value.trim();
+      const seoSlug = document.getElementById('edit-prod-seo-slug').value.trim();
+      const seoDescription = document.getElementById('edit-prod-seo-desc').value.trim();
+      const seoKeywords = document.getElementById('edit-prod-seo-keywords').value.trim();
+      const seoAlt = document.getElementById('edit-prod-seo-alt').value.trim();
+
+      const existing = window.pastryStore.getProductById(id) || {};
+
+      window.pastryStore.saveProduct({
+        ...existing,
+        id,
+        title,
+        categoryId,
+        price,
+        weightUnit,
+        desc,
+        image: editProductImageBase64 || existing.image || '',
+        isPlaceholder: !editProductImageBase64 && !existing.image,
+        seoTitle,
+        seoSlug,
+        seoDescription,
+        seoKeywords,
+        seoAlt
+      });
+
+      closeEditProductModal();
+      loadAdminData();
+      window.showLuxuryToast('ویرایش محصول', 'اطلاعات محصول و تنظیمات سئو با موفقیت به‌روزرسانی شد!', 'success');
+    }
+
+    // 2. Cakes Table
+    function renderCakeOrdersTable() {
+      const tbody = document.getElementById('admin-cakes-tbody');
+      const orders = window.pastryStore.getCakeOrders();
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem;">هنوز سفارش کیکی ثبت نشده است.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><strong style="color: var(--accent-gold);">${o.id}</strong></td>
+          <td>
+            <div style="font-weight: 700;">${o.customerName}</div>
+            <div dir="ltr" style="font-size: 0.8rem; color: #666;">${o.customerPhone}</div>
+          </td>
+          <td>${o.branchName}</td>
+          <td>${o.occasion} (${o.weightKg} کیلو)</td>
+          <td>
+            <div style="font-size: 0.8rem;">اسفنج: ${o.sponge}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">فیلینگ: ${o.filling}</div>
+            ${o.customText ? `<div style="font-size: 0.75rem; color: var(--accent-gold);">متن: "${o.customText}"</div>` : ''}
+          </td>
+          <td>${o.deliveryDate} - ${o.deliveryTime}</td>
+          <td><strong>${window.pastryStore.formatPrice(o.estimatedPrice)}</strong></td>
+          <td>
+            <span class="status-badge ${o.status.includes('تایید') ? 'confirmed' : 'pending'}">${o.status}</span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // 3. Events Table
+    function renderEventOrdersTable() {
+      const tbody = document.getElementById('admin-events-tbody');
+      const orders = window.pastryStore.getCustomOrders();
+
+      if (orders.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem;">هنوز سفارش اختصاصی ثبت نشده است.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => `
+        <tr>
+          <td><strong style="color: var(--accent-gold);">${o.id}</strong></td>
+          <td>
+            <div style="font-weight: 700;">${o.clientName}</div>
+            <div dir="ltr" style="font-size: 0.8rem; color: #666;">${o.clientPhone}</div>
+          </td>
+          <td>${o.branchName}</td>
+          <td><span style="font-weight: 700; color: var(--accent-gold);">${o.occasion}</span></td>
+          <td>${o.guestCount} نفر</td>
+          <td>${o.eventDate} ساعت ${o.eventTime}</td>
+          <td><strong>${window.pastryStore.formatPrice(o.estimatedPrice)}</strong></td>
+          <td>
+            <span class="status-badge ${o.status.includes('تایید') ? 'confirmed' : 'pending'}">${o.status}</span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // 4. Profile Update (Own password & name)
+    function handleUpdateMyProfile() {
+      const curUser = window.pastryStore.getCurrentUser();
+      if (!curUser) return;
+
+      const newName = document.getElementById('prof-name').value.trim();
+      const newUsername = document.getElementById('prof-username').value.trim();
+      const newPass = document.getElementById('prof-new-password').value.trim();
+
+      const res = window.pastryStore.updateUserProfile(curUser.username, newName, newUsername, newPass);
+      if (!res.success) {
+        window.showLuxuryToast('خطا در به‌روزرسانی', res.error || 'خطا در ذخیره مشخصات.', 'error');
+        return;
+      }
+
+      const updated = window.pastryStore.getCurrentUser();
+      applyUserRoleUI(updated);
+      loadAdminData();
+      window.showLuxuryToast('به‌روزرسانی موفق', 'مشخصات حساب و اطلاعات کاربری با موفقیت به‌روزرسانی شد!', 'success');
+    }
+
+    // 5. CEO Staff Management
+    function renderUsersTable() {
+      const tbody = document.getElementById('admin-users-tbody');
+      const users = window.pastryStore.getAdminUsers();
+      const curUser = window.pastryStore.getCurrentUser();
+
+      if (!tbody) return;
+
+      tbody.innerHTML = users.map(u => `
+        <tr>
+          <td><strong style="color: var(--accent-gold); direction: ltr; display: inline-block;">${u.username}</strong></td>
+          <td><span style="font-weight: 700;">${u.name}</span></td>
+          <td>
+            <span class="role-badge ${u.role}">${u.role === 'ceo' ? 'مدیر ارشد و موسس' : 'ادمین'}</span>
+          </td>
+          <td dir="ltr">${u.phone || '-'}</td>
+          <td>${u.createdAt || '-'}</td>
+          <td>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+              <button class="btn-admin-action" style="background: #D97706; color: #fff;" onclick="openEditUserModal('${u.username}')" title="ویرایش نام کاربری و مشخصات">✏️ ویرایش نام کاربری و حساب</button>
+              <button class="btn-admin-action" style="background: #3B82F6; color: #fff;" onclick="promptChangeAdminPassword('${u.username}')">تغییر رمز</button>
+              ${u.role !== 'ceo' ? `
+                <button class="btn-admin-action btn-admin-del" onclick="handleDeleteAdmin('${u.username}')">حذف ادمین</button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Modal Edit User (CEO exclusive for editing username & details)
+    function openEditUserModal(username) {
+      const users = window.pastryStore.getAdminUsers();
+      const user = users.find(u => u.username.toLowerCase() === username.toLowerCase());
+      if (!user) return;
+
+      document.getElementById('edit-user-old-username').value = user.username;
+      document.getElementById('edit-user-username').value = user.username;
+      document.getElementById('edit-user-name').value = user.name;
+      document.getElementById('edit-user-phone').value = user.phone || '';
+      document.getElementById('edit-user-pass').value = '';
+
+      const m = document.getElementById('edit-user-modal');
+      if (m) m.style.display = 'flex';
+    }
+
+    function closeEditUserModal() {
+      const m = document.getElementById('edit-user-modal');
+      if (m) m.style.display = 'none';
+    }
+
+    function submitEditUser() {
+      const oldUsername = document.getElementById('edit-user-old-username').value.trim();
+      const newUsername = document.getElementById('edit-user-username').value.trim().toLowerCase();
+      const newName = document.getElementById('edit-user-name').value.trim();
+      const newPhone = document.getElementById('edit-user-phone').value.trim();
+      const newPass = document.getElementById('edit-user-pass').value.trim();
+
+      const res = window.pastryStore.updateUserProfile(oldUsername, newName, newUsername, newPass, newPhone);
+      if (!res.success) {
+        window.showLuxuryToast('خطا در ویرایش', res.error || 'خطا در ویرایش اطلاعات کاربر.', 'error');
+        return;
+      }
+
+      closeEditUserModal();
+      const cur = window.pastryStore.getCurrentUser();
+      applyUserRoleUI(cur);
+      loadAdminData();
+      window.showLuxuryToast('به‌روزرسانی موفق', 'مشخصات و نام کاربری با موفقیت به‌روزرسانی شد!', 'success');
+    }
+
+    function openAddAdminModal() {
+      const m = document.getElementById('add-admin-modal');
+      if (m) m.style.display = 'flex';
+    }
+    function closeAddAdminModal() {
+      const m = document.getElementById('add-admin-modal');
+      if (m) m.style.display = 'none';
+    }
+    function submitNewAdmin() {
+      const username = document.getElementById('new-admin-user').value.trim().toLowerCase();
+      const name = document.getElementById('new-admin-name').value.trim();
+      const password = document.getElementById('new-admin-pass').value.trim();
+      const phone = document.getElementById('new-admin-phone').value.trim();
+
+      const existing = window.pastryStore.getAdminUsers().find(u => u.username.toLowerCase() === username);
+      if (existing) {
+        window.showLuxuryToast('نام کاربری تکراری', 'این نام کاربری قبلاً تعریف شده است!', 'warning');
+        return;
+      }
+
+      window.pastryStore.saveAdminUser({
+        username,
+        name,
+        password,
+        phone,
+        role: 'admin'
+      });
+
+      closeAddAdminModal();
+      loadAdminData();
+      window.showLuxuryToast('ادمین جدید افزوده شد', 'ادمین جدید با موفقیت به سیستم اضافه گردید!', 'success');
+    }
+
+    function promptChangeAdminPassword(username) {
+      window.showLuxuryPrompt({
+        title: 'تغییر رمز عبور',
+        message: `لطفاً رمز عبور جدید را برای «${username}» وارد فرمایید:`,
+        placeholder: 'رمز عبور جدید...',
+        inputType: 'password',
+        onConfirm: (newP) => {
+          if (newP && newP.trim() !== '') {
+            window.pastryStore.changeUserPassword(username, newP.trim());
+            window.showLuxuryToast('رمز عبور تغییر یافت', `رمز عبور «${username}» با موفقیت تغییر کرد.`, 'success');
+            loadAdminData();
+          }
+        }
+      });
+    }
+
+    function handleDeleteAdmin(username) {
+      window.showLuxuryConfirm({
+        title: 'حذف دسترسی ادمین',
+        message: `آیا از حذف دسترسی ادمین «${username}» اطمینان دارید؟`,
+        confirmText: 'بله، حذف شود',
+        cancelText: 'انصراف',
+        isDanger: true,
+        onConfirm: () => {
+          const res = window.pastryStore.deleteAdminUser(username);
+          if (res.success) {
+            window.showLuxuryToast('ادمین حذف شد', 'دسترسی ادمین با موفقیت حذف گردید.', 'info');
+            loadAdminData();
+          } else {
+            window.showLuxuryToast('خطا در حذف', res.error || 'خطا در حذف ادمین.', 'error');
+          }
+        }
+      });
+    }
+
+    function handleSaveEasterEggWords() {
+      const input = document.getElementById('easter-egg-words-input');
+      const msg = document.getElementById('easter-egg-save-msg');
+      if (!input || !window.pastryStore) return;
+      const raw = input.value;
+      const words = raw.split(/[,،]/).map(w => w.trim()).filter(w => w.length > 0);
+      window.pastryStore.setEasterEggWords(words);
+      if (msg) {
+        msg.textContent = '✓ کلیدواژه‌های ورود اختصاصی با موفقیت به‌روزرسانی و ذخیره شدند!';
+        msg.style.display = 'block';
+        setTimeout(() => { if (msg) msg.style.display = 'none'; }, 4000);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      checkCurrentAdminAuth();
+      document.getElementById('admin-prod-search').addEventListener('input', renderProductsTable);
+      document.getElementById('admin-cat-filter').addEventListener('change', renderProductsTable);
+
+      document.getElementById('new-prod-title')?.addEventListener('input', updateNewProdSerpPreview);
+      document.getElementById('new-prod-desc')?.addEventListener('input', updateNewProdSerpPreview);
+      document.getElementById('edit-prod-title')?.addEventListener('input', updateEditProdSerpPreview);
+      document.getElementById('edit-prod-desc')?.addEventListener('input', updateEditProdSerpPreview);
+
+      const authModalEl = document.getElementById('admin-auth-modal');
+      if (authModalEl) {
+        authModalEl.addEventListener('click', (e) => {
+          if (e.target === authModalEl) {
+            window.location.href = 'index.html';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

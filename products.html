@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فهرست و ویترین محصولات | نام برند شما</title>
+  <meta name="description" content="فهرست کامل شیرینی‌های خشک، تر، دسرهای سنتی و بین‌المللی، آجیل و پک‌های هدیه لوکس دست‌ساز.">
+  <meta name="theme-color" content="#F7F2EB">
+
+  <!-- Persian Font Vazirmatn -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Core & Page Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- Luxury Floating Header -->
+  <header class="site-header" id="main-header">
+    <button class="mobile-hamburger-btn" id="mobile-menu-toggle" aria-label="منوی سایت">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <!-- Brand Logo linking to Landing Page -->
+    <a href="index.html" class="brand-wrapper" aria-label="صفحه اصلی نام برند شما">
+      <div class="brand-logo-icon">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <path d="M16 2L19.2 12.8L30 16L19.2 19.2L16 30L12.8 19.2L2 16L12.8 12.8L16 2Z" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="brand-info">
+        <span class="brand-name">نام برند شما</span>
+        <span class="brand-sub">LUXURY BRAND</span>
+      </div>
+    </a>
+
+    <!-- Desktop Navigation Links -->
+    <nav aria-label="ناوبری اصلی" class="desktop-nav">
+      <ul class="nav-links">
+        <li><a href="products.html" class="nav-link active">محصولات</a></li>
+        <li><a href="cake-customizer.html" class="nav-link">سفارش کیک</a></li>
+        <li><a href="custom-orders.html" class="nav-link">سفارشات اختصاصی</a></li>
+        <li><a href="about.html#branches" class="nav-link">ارتباط با ما و شعبات</a></li>
+        <li><a href="about.html" class="nav-link">درباره ما</a></li>
+      </ul>
+    </nav>
+
+    <!-- Header Actions -->
+    <div class="header-actions">
+      <!-- Cart Button -->
+      <button class="btn-cart-nav" id="cart-btn" aria-label="سبد خرید" title="سبد خرید">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span class="cart-badge-count">۰</span>
+      </button>
+
+      <!-- Auth (ورود / ثبت نام) Button -->
+      <button class="btn-auth-nav open-auth-modal" id="auth-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>ورود / ثبت نام</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay"></div>
+  <aside class="mobile-drawer" id="mobile-drawer" aria-label="منوی موبایل">
+    <div class="drawer-header">
+      <div class="brand-info">
+        <span class="brand-name">نام برند شما</span>
+        <span class="brand-sub">LUXURY BRAND</span>
+      </div>
+      <button class="drawer-close-btn" id="drawer-close-btn" aria-label="بستن منو">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="products.html" class="drawer-link active" style="color: var(--accent-gold); font-weight: 700;">محصولات</a></li>
+      <li><a href="cake-customizer.html" class="drawer-link">سفارش کیک</a></li>
+      <li><a href="custom-orders.html" class="drawer-link">سفارشات اختصاصی</a></li>
+      <li><a href="about.html#branches" class="drawer-link">ارتباط با ما و شعبات</a></li>
+      <li><a href="about.html" class="drawer-link">درباره ما</a></li>
+    </ul>
+    <div class="drawer-actions">
+      <button class="btn-auth-nav open-auth-modal" style="width: 100%; justify-content: center;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>ورود / ثبت نام</span>
+      </button>
+    </div>
+  </aside>
+  </aside>
+
+  <!-- Side Cart Drawer -->
+  <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
+  <aside class="cart-side-drawer" id="cart-side-drawer">
+    <div class="cart-drawer-head">
+      <div class="cart-drawer-title">سبد خرید شما</div>
+      <button id="cart-close-btn" style="background:none; border:none; cursor:pointer;">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <div class="cart-items-list" id="cart-items-list"></div>
+    <div class="cart-drawer-footer">
+      <div class="cart-subtotal-row">
+        <span>مجموع قابل پرداخت:</span>
+        <span id="cart-subtotal-price" style="color: var(--accent-gold);">۰ تومان</span>
+      </div>
+      <button class="btn-checkout-now" onclick="window.openCheckoutModal()">
+        تکمیل سفارش و پرداخت
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Container -->
+  <main class="page-container">
+
+    <!-- Hero Intro -->
+    <section class="page-hero-banner">
+      <h1 class="page-title">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent-gold);">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        فهرست محصولات و شیرینی‌های فاخر
+      </h1>
+      <p class="page-subtitle">
+        مجموعه‌ای از ۱۲ گروه اصیل قنادی، پخت روزانه با ۱۰۰٪ کره حیوانی، میوه‌های تازه و زعفران ممتاز قائنات. بر روی هر دسته‌بندی کلیک کنید تا مستقیماً به ردیف محصولات آن هدایت شوید.
+      </p>
+    </section>
+
+    <!-- Search Input (Matching User App Screenshot) -->
+    <div class="catalog-search-wrap">
+      <input type="text" id="catalog-search-input" class="catalog-search-input" placeholder="جستجوی نام شیرینی، دسر، تارت یا آجیل...">
+      <div class="catalog-search-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+      </div>
+    </div>
+
+    <!-- 1. Hot Weekly Products Row (محصولات داغ و پرفروش هفته) -->
+    <section style="margin-bottom: 2.8rem;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.1rem;">
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+          <span style="color: #EF4444;">🔥</span>
+          <span>محصولات داغ و پرفروش هفته</span>
+        </h2>
+        <span style="font-size: 0.8rem; color: var(--accent-gold); font-weight: 700;">پخت امروز با ۱۰۰٪ کره طبیعی</span>
+      </div>
+      <div class="shelf-track-container">
+        <div class="shelf-cards-row" id="products-hot-row">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 12 Core Categories Grid (User Reference Screenshot) -->
+    <section aria-label="دسته‌بندی‌های محصولات">
+      <div class="categories-showcase-grid" id="categories-grid-container">
+        <!-- Rendered dynamically from data.js -->
+      </div>
+    </section>
+
+    <!-- Shelves Container (Each Category has an horizontal scrollable row) -->
+    <section id="shelves-container">
+      <!-- Rendered dynamically from data.js -->
+    </section>
+
+  </main>
+
+  <!-- View All Modal for any Category -->
+  <div class="modal-overlay" id="view-all-modal" role="dialog" aria-modal="true" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:3000; align-items:center; justify-content:center; padding:1.5rem;">
+    <div style="background:#fff; width:min(94%, 900px); max-height:85vh; border-radius:24px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.25);">
+      <div style="padding:1.4rem 1.8rem; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center; background:#FAF7F2;">
+        <h3 id="modal-category-title" style="font-size:1.25rem; font-weight:800; color:var(--text-primary);">تمام محصولات دسته‌بندی</h3>
+        <button id="modal-close-x" style="background:none; border:none; cursor:pointer; font-size:1.5rem; color:#888;">✕</button>
+      </div>
+      <div id="modal-products-grid" style="padding:1.5rem; overflow-y:auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:1.2rem;">
+        <!-- Filled dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Scripts & Security -->
+  <script src="js/security.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/shared-nav.js"></script>
+
+  <!-- Products Catalog Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const categories = window.pastryStore.getCategories();
+      const categoriesGrid = document.getElementById('categories-grid-container');
+      const shelvesContainer = document.getElementById('shelves-container');
+      const searchInput = document.getElementById('catalog-search-input');
+
+      // 1. Render 12 Categories Grid
+      categoriesGrid.innerHTML = categories.map(cat => `
+        <a href="#shelf-${cat.id}" class="category-tile-btn" data-cat-id="${cat.id}">
+          <div class="category-tile-icon">${cat.svg || '🍰'}</div>
+          <span class="category-tile-name">${cat.name}</span>
+        </a>
+      `).join('');
+
+      // 2. Render Shelves for each category
+      function renderShelves(filterText = '') {
+        const query = filterText.trim().toLowerCase();
+        let shelvesHtml = '';
+
+        categories.forEach(cat => {
+          let prods = window.pastryStore.getProductsByCategory(cat.id);
+          if (query) {
+            prods = prods.filter(p => p.title.toLowerCase().includes(query) || (p.desc && p.desc.toLowerCase().includes(query)));
+          }
+
+          if (prods.length === 0 && query) return; // Hide shelf if no search match
+
+          shelvesHtml += `
+            <div class="category-shelf-section" id="shelf-${cat.id}">
+              <div class="shelf-header">
+                <div class="shelf-title-wrap">
+                  <div class="shelf-icon-badge">${cat.svg || '🍰'}</div>
+                  <div>
+                    <h2 class="shelf-title">${cat.name}</h2>
+                    <div class="shelf-desc">${cat.desc}</div>
+                  </div>
+                </div>
+                <div class="shelf-actions">
+                  <button class="shelf-nav-arrow" onclick="scrollShelf('${cat.id}', -320)" aria-label="قبلی">❮</button>
+                  <button class="shelf-nav-arrow" onclick="scrollShelf('${cat.id}', 320)" aria-label="بعدی">❯</button>
+                  <button class="btn-view-all" onclick="openViewAllModal('${cat.id}')">مشاهده همه</button>
+                </div>
+              </div>
+
+              <div class="shelf-track-container">
+                <div class="shelf-cards-row" id="shelf-track-${cat.id}">
+                  ${prods.map(prod => createProductCardHtml(prod)).join('')}
+                </div>
+              </div>
+            </div>
+          `;
+        });
+
+        shelvesContainer.innerHTML = shelvesHtml || `
+          <div style="text-align: center; padding: 4rem 1rem; color: var(--text-muted);">
+            <h3>محصولی با این عبارت پیدا نشد!</h3>
+            <p style="margin-top:0.5rem;">لطفاً عبارت دیگری را جستجو فرمایید.</p>
+          </div>
+        `;
+      }
+
+      function createProductCardHtml(prod) {
+        return `
+          <article class="pastry-product-card" id="card-${prod.id}">
+            <div class="card-img-wrapper">
+              ${prod.badge ? `<span class="card-badge-floating">${prod.badge}</span>` : ''}
+              ${prod.image ? `
+                <img src="${prod.image}" alt="${prod.title}" class="card-real-img" loading="lazy">
+              ` : `
+                <div class="card-placeholder-box">
+                  <div class="placeholder-brand-icon">
+                    <svg viewBox="0 0 32 32" fill="none" width="36" height="36" stroke="currentColor" stroke-width="1.6">
+                      <path d="M16 2L19.2 12.8L30 16L19.2 19.2L16 30L12.8 19.2L2 16L12.8 12.8L16 2Z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <div class="placeholder-text-label">عکس محصول شما</div>
+                </div>
+              `}
+            </div>
+
+            <div class="card-info-body">
+              <h3 class="card-product-title" style="margin-bottom: 0.8rem;">${prod.title}</h3>
+
+              <div class="card-footer-action">
+                <div class="card-price-value">
+                  ${new Intl.NumberFormat('fa-IR').format(prod.price)} <small>تومان</small>
+                </div>
+                <button class="btn-add-cart" onclick="addProductToCart('${prod.id}')">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                  </svg>
+                  <span>افزودن</span>
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      window.scrollShelf = function(catId, delta) {
+        const row = document.getElementById(`shelf-track-${catId}`);
+        if (row) {
+          row.scrollBy({ left: delta, behavior: 'smooth' });
+        }
+      };
+
+      window.addProductToCart = function(prodId) {
+        window.pastryStore.addToCart(prodId, 1);
+        const card = document.getElementById(`card-${prodId}`);
+        if (card) {
+          card.style.transform = 'scale(0.98)';
+          setTimeout(() => card.style.transform = '', 200);
+        }
+        window.renderSideCart();
+      };
+
+      // Search Handler
+      searchInput.addEventListener('input', (e) => {
+        renderShelves(e.target.value);
+      });
+
+      // View All Modal
+      const modal = document.getElementById('view-all-modal');
+      const modalTitle = document.getElementById('modal-category-title');
+      const modalGrid = document.getElementById('modal-products-grid');
+      const modalClose = document.getElementById('modal-close-x');
+
+      window.openViewAllModal = function(catId) {
+        const cat = categories.find(c => c.id === catId);
+        const prods = window.pastryStore.getProductsByCategory(catId);
+        if (!cat) return;
+
+        modalTitle.textContent = `تمام محصولات: ${cat.name}`;
+        modalGrid.innerHTML = prods.map(prod => createProductCardHtml(prod)).join('');
+        modal.style.display = 'flex';
+      };
+
+      modalClose.addEventListener('click', () => modal.style.display = 'none');
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) modal.style.display = 'none';
+      });
+
+      // Render Hot Weekly Products
+      const hotRow = document.getElementById('products-hot-row');
+      if (hotRow && window.pastryStore) {
+        const hotProds = window.pastryStore.getHotWeeklyProducts();
+        hotRow.innerHTML = hotProds.map(prod => createProductCardHtml(prod)).join('');
+      }
+
+      // Initial Render
+      renderShelves();
+    });
+  </script>
+</body>
+</html>

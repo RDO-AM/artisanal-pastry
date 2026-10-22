@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>استودیوی سفارش آنلاین کیک | نام برند شما</title>
+  <meta name="description" content="طراحی و شخصی‌سازی آنلاین کیک با انتخاب طعم، فیلینگ، وزن و دیزاین اختصاصی با تحویل در شعبات یا درب منزل.">
+  <meta name="theme-color" content="#F7F2EB">
+
+  <!-- Persian Font Vazirmatn -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Core & Page Styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/pages.css">
+</head>
+<body>
+
+  <!-- Luxury Floating Header -->
+  <header class="site-header" id="main-header">
+    <button class="mobile-hamburger-btn" id="mobile-menu-toggle" aria-label="منوی سایت">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
+    <a href="index.html" class="brand-wrapper" aria-label="صفحه اصلی نام برند شما">
+      <div class="brand-logo-icon">
+        <svg viewBox="0 0 32 32" fill="none" width="28" height="28">
+          <path d="M16 2L19.2 12.8L30 16L19.2 19.2L16 30L12.8 19.2L2 16L12.8 12.8L16 2Z" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="brand-info">
+        <span class="brand-name">نام برند شما</span>
+        <span class="brand-sub">LUXURY BRAND</span>
+      </div>
+    </a>
+
+    <nav aria-label="ناوبری اصلی" class="desktop-nav">
+      <ul class="nav-links">
+        <li><a href="products.html" class="nav-link">محصولات</a></li>
+        <li><a href="cake-customizer.html" class="nav-link active">سفارش کیک</a></li>
+        <li><a href="custom-orders.html" class="nav-link">سفارشات اختصاصی</a></li>
+        <li><a href="about.html#branches" class="nav-link">ارتباط با ما و شعبات</a></li>
+        <li><a href="about.html" class="nav-link">درباره ما</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <button class="btn-cart-nav" id="cart-btn" aria-label="سبد خرید">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="9" cy="21" r="1"></circle>
+          <circle cx="20" cy="21" r="1"></circle>
+          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+        </svg>
+        <span class="cart-badge-count">۰</span>
+      </button>
+
+      <!-- Auth (ورود / ثبت نام) Button -->
+      <button class="btn-auth-nav open-auth-modal" id="auth-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>ورود / ثبت نام</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer -->
+  <div class="mobile-drawer-overlay" id="mobile-drawer-overlay"></div>
+  <aside class="mobile-drawer" id="mobile-drawer">
+    <div class="drawer-header">
+      <div class="brand-info">
+        <span class="brand-name">نام برند شما</span>
+        <span class="brand-sub">LUXURY BRAND</span>
+      </div>
+      <button class="drawer-close-btn" id="drawer-close-btn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+    <ul class="drawer-links">
+      <li><a href="products.html" class="drawer-link">محصولات</a></li>
+      <li><a href="cake-customizer.html" class="drawer-link active" style="color: var(--accent-gold); font-weight: 700;">سفارش کیک</a></li>
+      <li><a href="custom-orders.html" class="drawer-link">سفارشات اختصاصی</a></li>
+      <li><a href="about.html#branches" class="drawer-link">ارتباط با ما و شعبات</a></li>
+      <li><a href="about.html" class="drawer-link">درباره ما</a></li>
+    </ul>
+    <div class="drawer-actions">
+      <button class="btn-auth-nav open-auth-modal" style="width: 100%; justify-content: center;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        <span>ورود / ثبت نام</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Side Cart Drawer -->
+  <div class="cart-drawer-overlay" id="cart-drawer-overlay"></div>
+  <aside class="cart-side-drawer" id="cart-side-drawer">
+    <div class="cart-drawer-head">
+      <div class="cart-drawer-title">سبد خرید شما</div>
+      <button id="cart-close-btn" style="background:none; border:none; cursor:pointer;">✕</button>
+    </div>
+    <div class="cart-items-list" id="cart-items-list"></div>
+    <div class="cart-drawer-footer">
+      <div class="cart-subtotal-row">
+        <span>مجموع:</span>
+        <span id="cart-subtotal-price" style="color: var(--accent-gold);">۰ تومان</span>
+      </div>
+      <button class="btn-checkout-now">تکمیل سفارش و پرداخت</button>
+    </div>
+  </aside>
+
+  <!-- Page Main -->
+  <main class="page-container">
+    <section class="page-hero-banner">
+      <h1 class="page-title">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--accent-gold);">
+          <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path>
+        </svg>
+        استودیوی طراحی و سفارش آنلاین کیک
+      </h1>
+      <p class="page-subtitle">
+        کیک اختصاصی جشن و مناسبت‌های خاص خود را در ۷ مرحله هوشمند طراحی کنید؛ وزن، فیلینگ، اسفنج، روکش و طرح دلخواه را تعیین نمایید تا با بالاترین استانداردهای قنادی برای شما پخته و تحویل گردد.
+      </p>
+    </section>
+
+    <div class="cake-builder-layout">
+      <!-- Steps Form -->
+      <form class="builder-stepper" id="cake-customizer-form" onsubmit="event.preventDefault(); submitCakeOrder();">
+
+        <!-- Step 1: مناسبت کیک -->
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">۱</span>
+            <h2 class="step-title">مناسبت و تم کیک</h2>
+          </div>
+          <div class="step-options-grid">
+            <label class="option-select-card active">
+              <input type="radio" name="occasion" value="تولد و سورپرایز" checked onchange="updateCakeConfig()">
+              <div class="option-label">🎂 جشن تولد و سورپرایز</div>
+              <div class="option-desc">دیزاین مدرن، شاد و رنگین</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="occasion" value="عروسی و نامزدی" onchange="updateCakeConfig()">
+              <div class="option-label">💍 عروسی و نامزدی VIP</div>
+              <div class="option-desc">چندطبقه مجلل، ورق طلا و گل طبیعی</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="occasion" value="سالگرد ازدواج و ولنتاین" onchange="updateCakeConfig()">
+              <div class="option-label">💖 سالگرد و ولنتاین</div>
+              <div class="option-desc">رمانتیک، تم قرمز یا مینیمال قلبی</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="occasion" value="کودکانه و کارتون" onchange="updateCakeConfig()">
+              <div class="option-label">🎈 تم کودکانه و فانتزی</div>
+              <div class="option-desc">تاپرهای سه بعدی و رنگ‌های پاستلی</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="occasion" value="عصرانه و خانوادگی" onchange="updateCakeConfig()">
+              <div class="option-label">☕ دورهمی و عصرانه</div>
+              <div class="option-desc">کیک میوه‌ای سبک، عریان و بدون فوندانت</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 2: وزن کیک و تعداد نفرات -->
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">۲</span>
+            <h2 class="step-title">وزن کیک و ظرفیت پذیرایی</h2>
+          </div>
+          <div class="step-options-grid">
+            <label class="option-select-card active">
+              <input type="radio" name="weight" value="1.5" data-base="650000" checked onchange="updateCakeConfig()">
+              <div class="option-label">۱.۵ کیلوگرم (۸ تا ۱۰ نفر)</div>
+              <div class="option-desc">دورهمی‌های خانوادگی کوچک</div>
+              <div class="option-price-diff">۶۵۰,۰۰۰ تومان</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="weight" value="2.5" data-base="980000" onchange="updateCakeConfig()">
+              <div class="option-label">۲.۵ کیلوگرم (۱۵ تا ۱۸ نفر)</div>
+              <div class="option-desc">جشن‌های تولد و مهمانی متوسط</div>
+              <div class="option-price-diff">۹۸۰,۰۰۰ تومان</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="weight" value="4.0" data-base="1580000" onchange="updateCakeConfig()">
+              <div class="option-label">۴ کیلوگرم (۲۵ تا ۳۰ نفر)</div>
+              <div class="option-desc">مهمانی‌های بزرگ و دوطبقه</div>
+              <div class="option-price-diff">۱,۵۸۰,۰۰۰ تومان</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="weight" value="6.0" data-base="2450000" onchange="updateCakeConfig()">
+              <div class="option-label">۶ کیلوگرم (۴۰ تا ۵۰ نفر)</div>
+              <div class="option-desc">عروسی، نامزدی و همایش‌های ویژه</div>
+              <div class="option-price-diff">۲,۴۵۰,۰۰۰ تومان</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 3: طعم اسفنج -->
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">۳</span>
+            <h2 class="step-title">طعم اسفنج کیک</h2>
+          </div>
+          <div class="step-options-grid">
+            <label class="option-select-card active">
+              <input type="radio" name="sponge" value="وانیلی سبک فرانسوی" checked onchange="updateCakeConfig()">
+              <div class="option-label">وانیلی سبک فرانسوی</div>
+              <div class="option-desc">بافت ابریشمی با عصاره وانیل طبیعی</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="sponge" value="شکلاتی دابل چاکلت بلژیکی" onchange="updateCakeConfig()">
+              <div class="option-label">شکلاتی دابل چاکلت</div>
+              <div class="option-desc">پودر کاکائوی هلندی و شکلات غلیظ</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="sponge" value="رد ولوت مخملی آمریکایی" onchange="updateCakeConfig()">
+              <div class="option-label">رد ولوت مخملی</div>
+              <div class="option-desc">بافت مرطوب ویژه با رنگ سرخ یاقوتی</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="sponge" value="نسکافه‌ای کاراملی" onchange="updateCakeConfig()">
+              <div class="option-label">نسکافه‌ای کاراملی</div>
+              <div class="option-desc">رایحه ملایم قهوه اسپرسو و شکر قهوه‌ای</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 4: فیلینگ لایه‌ها -->
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">۴</span>
+            <h2 class="step-title">فیلینگ و کرم بین لایه‌ها</h2>
+          </div>
+          <div class="step-options-grid">
+            <label class="option-select-card active">
+              <input type="radio" name="filling" value="خامه سبک + موز تازه و گردوی برشته" data-extra="0" checked onchange="updateCakeConfig()">
+              <div class="option-label">خامه، موز و گردوی اعلا</div>
+              <div class="option-desc">کلاسیک‌ترین و محبوب‌ترین ترکیب</div>
+              <div class="option-price-diff">بدون هزینه اضافه</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="filling" value="کرم نوتلا + توت فرنگی طبیعی" data-extra="95000" onchange="updateCakeConfig()">
+              <div class="option-label">کرم نوتلا و توت فرنگی</div>
+              <div class="option-desc">شکلات فندقی با اسلایس توت فرنگی تازه</div>
+              <div class="option-price-diff">+ ۹۵,۰۰۰ تومان</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="filling" value="کرم پسته سلطنتی + کارامل نمکی" data-extra="140000" onchange="updateCakeConfig()">
+              <div class="option-label">کرم پسته سلطنتی و کارامل</div>
+              <div class="option-desc">کرم پسته خالص و سس کارامل دست‌ساز</div>
+              <div class="option-price-diff">+ ۱۴۰,۰۰۰ تومان</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="filling" value="چیزکریم ماسکارپونه و لیمو" data-extra="80000" onchange="updateCakeConfig()">
+              <div class="option-label">چیزکریم و لیمو ترش</div>
+              <div class="option-desc">کمی ترش و سبک با پنیر ماسکارپونه</div>
+              <div class="option-price-diff">+ ۸۰,۰۰۰ تومان</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 5: روکش و دیزاین -->
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">۵</span>
+            <h2 class="step-title">روکش و تزئین ظاهری</h2>
+          </div>
+          <div class="step-options-grid">
+            <label class="option-select-card active">
+              <input type="radio" name="frosting" value="خامه صاف مدرن مینیمال" data-extra="0" checked onchange="updateCakeConfig()">
+              <div class="option-label">خامه مینیمال مدرن</div>
+              <div class="option-desc">صاف و صیقلی، سبک و کم‌شیرینی</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="frosting" value="فوندانت مجسمه‌ای لوکس" data-extra="190000" onchange="updateCakeConfig()">
+              <div class="option-label">فوندانت لوکس مجلسی</div>
+              <div class="option-desc">مناسب طرح‌های تم‌دار، عروسی و ژورنالی</div>
+              <div class="option-price-diff">+ ۱۹۰,۰۰۰ تومان</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="frosting" value="روکش شکلات براق میرور گلیز" data-extra="120000" onchange="updateCakeConfig()">
+              <div class="option-label">میرور گلیز آینه‌ای</div>
+              <div class="option-desc">روکش صیقلی براق فرانسوی</div>
+              <div class="option-price-diff">+ ۱۲۰,۰۰۰ تومان</div>
+            </label>
+            <label class="option-select-card">
+              <input type="radio" name="frosting" value="کیک برهنه (Naked Cake) با گل و میوه" data-extra="70000" onchange="updateCakeConfig()">
+              <div class="option-label">سمی‌نیکد با گل طبیعی</div>
+              <div class="option-desc">ظاهر بوهمین با گل‌های تازه و میوه فصل</div>
+              <div class="option-price-diff">+ ۷۰,۰۰۰ تومان</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 6: متن روی کیک و آپلود عکس طرح دلخواه -->
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">۶</span>
+            <h2 class="step-title">متن روی کیک و عکس الگو (اختیاری)</h2>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:1.1rem;">
+            <div>
+              <label style="font-size:0.88rem; font-weight:700; color:var(--text-primary); display:block; margin-bottom:0.4rem;">
+                متن یا تبریک دلخواه (نوشته شده با خامه یا تاپر شکلاتی):
+              </label>
+              <input type="text" id="cake-custom-text" class="form-input" placeholder="مثال: تولدت مبارک سارای عزیزم ❤️" style="width:100%; padding:0.8rem 1rem; border:1px solid #ccc; border-radius:12px; font-family:inherit;">
+            </div>
+
+            <div>
+              <label style="font-size:0.88rem; font-weight:700; color:var(--text-primary); display:block; margin-bottom:0.4rem;">
+                اگر عکس یا مدلی در اینترنت دیده‌اید، اینجا آپلود فرمایید:
+              </label>
+              <input type="file" id="cake-reference-file" accept="image/*" style="font-family:inherit; font-size:0.85rem;">
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 7: انتخاب شعبه، تاریخ تحویل و اطلاعات خریدار -->
+        <div class="step-block">
+          <div class="step-header">
+            <span class="step-num">۷</span>
+            <h2 class="step-title">انتخاب شعبه، زمان تحویل و شماره تماس</h2>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem;">
+            <div>
+              <label style="font-size:0.85rem; font-weight:700; display:block; margin-bottom:0.3rem;">شعبه تحویل‌دهنده:</label>
+              <select id="cake-branch-select" style="width:100%; padding:0.8rem; border-radius:12px; border:1px solid #ccc; font-family:inherit;">
+                <!-- Branches injected via JS -->
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.85rem; font-weight:700; display:block; margin-bottom:0.3rem;">تاریخ تحویل درخواستی:</label>
+              <input type="date" id="cake-delivery-date" style="width:100%; padding:0.75rem; border-radius:12px; border:1px solid #ccc; font-family:inherit;" required>
+            </div>
+            <div>
+              <label style="font-size:0.85rem; font-weight:700; display:block; margin-bottom:0.3rem;">ساعت تحویل:</label>
+              <select id="cake-delivery-time" style="width:100%; padding:0.8rem; border-radius:12px; border:1px solid #ccc; font-family:inherit;">
+                <option value="۱۰:۰۰ الی ۱۳:۰۰ (صبح)">۱۰:۰۰ الی ۱۳:۰۰ (صبح)</option>
+                <option value="۱۴:۰۰ الی ۱۷:۰۰ (عصر)">۱۴:۰۰ الی ۱۷:۰۰ (عصر)</option>
+                <option value="۱۸:۰۰ الی ۲۱:۰۰ (غروب و شب)">۱۸:۰۰ الی ۲۱:۰۰ (غروب و شب)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.85rem; font-weight:700; display:block; margin-bottom:0.3rem;">نام و نام خانوادگی:</label>
+              <input type="text" id="cake-customer-name" placeholder="مثال: علیرضا پارسا" style="width:100%; padding:0.8rem; border-radius:12px; border:1px solid #ccc; font-family:inherit;" required>
+            </div>
+            <div>
+              <label style="font-size:0.85rem; font-weight:700; display:block; margin-bottom:0.3rem;">شماره تماس همراه:</label>
+              <input type="tel" id="cake-customer-phone" placeholder="۰۹۱۲۳۴۵۶۷۸۹" dir="ltr" style="width:100%; padding:0.8rem; border-radius:12px; border:1px solid #ccc; font-family:inherit;" required>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-checkout-now" style="font-size:1.05rem; padding:1.1rem; margin-top:1rem;">
+          ثبت و ارسال سفارش کیک به شعبه
+        </button>
+      </form>
+
+      <!-- Sidebar Invoice -->
+      <aside class="builder-summary-sidebar">
+        <div class="summary-cake-preview">
+          <img src="images/luxury_custom_cake.jpg" alt="پیش‌نمایش کیک لوکس">
+          <div class="summary-cake-overlay">طراحی دست‌ساز با متریال فاخر</div>
+        </div>
+
+        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:0.8rem;">پیش‌فاکتور زنده کیک</h3>
+
+        <div class="summary-line-item">
+          <span>مناسبت:</span>
+          <strong id="sum-occasion">تولد و سورپرایز</strong>
+        </div>
+        <div class="summary-line-item">
+          <span>وزن و ظرفیت:</span>
+          <strong id="sum-weight">۱.۵ کیلو (۸-۱۰ نفر)</strong>
+        </div>
+        <div class="summary-line-item">
+          <span>اسفنج:</span>
+          <strong id="sum-sponge">وانیلی فرانسوی</strong>
+        </div>
+        <div class="summary-line-item">
+          <span>فیلینگ لایه‌ها:</span>
+          <strong id="sum-filling">خامه، موز و گردو</strong>
+        </div>
+        <div class="summary-line-item">
+          <span>روکش:</span>
+          <strong id="sum-frosting">خامه مینیمال مدرن</strong>
+        </div>
+
+        <div class="summary-total-box">
+          <div class="summary-total-label">قیمت کل تخمینی:</div>
+          <div class="summary-total-price" id="sum-total-price">۶۵۰,۰۰۰ تومان</div>
+        </div>
+
+        <p style="font-size:0.75rem; color:var(--text-muted); line-height:1.5; margin-top:0.8rem;">
+          * قیمت نهایی بر اساس وزن دقیق هنگام تحویل با تلورانس حداکثر ±۱۰۰ گرم محاسبه خواهد شد.
+        </p>
+      </aside>
+    </div>
+  </main>
+
+  <!-- Success Modal -->
+  <div class="modal-overlay" id="cake-success-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:3000; align-items:center; justify-content:center; padding:1.5rem;">
+    <div style="background:#fff; width:min(94%, 550px); border-radius:24px; padding:2rem; text-align:center; box-shadow:0 20px 40px rgba(0,0,0,0.25);">
+      <div style="width:65px; height:65px; border-radius:50%; background:#10B981; color:#fff; display:flex; align-items:center; justify-content:center; margin:0 auto 1.2rem; font-size:2rem;">✓</div>
+      <h3 style="font-size:1.4rem; font-weight:800; color:var(--text-primary); margin-bottom:0.6rem;">سفارش کیک شما ثبت شد!</h3>
+      <div id="cake-order-tracking" style="display:inline-block; padding:0.4rem 1.2rem; background:#FAF6EE; border:1px dashed var(--accent-gold); border-radius:12px; font-weight:800; color:var(--accent-gold); margin-bottom:1rem; font-size:1.1rem;"></div>
+      <p id="cake-modal-branch-msg" style="font-size:0.92rem; line-height:1.7; color:var(--text-secondary); margin-bottom:1.8rem;"></p>
+      <div style="display:flex; gap:0.8rem; justify-content:center;">
+        <a href="index.html" class="btn-view-all" style="padding:0.7rem 1.4rem;">بازگشت به صفحه اصلی</a>
+        <a href="products.html" class="btn-checkout-now" style="width:auto; padding:0.7rem 1.4rem;">مشاهده سایر محصولات</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Scripts -->
+  <script src="js/security.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/shared-nav.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Populate Branches Select
+      const branchSelect = document.getElementById('cake-branch-select');
+      const branches = window.pastryStore.getBranches();
+      branchSelect.innerHTML = branches.map(b => `
+        <option value="${b.id}">${b.name} - ${b.address.split('،')[1] || ''}</option>
+      `).join('');
+
+      // Set default delivery date (tomorrow)
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.getElementById('cake-delivery-date').value = tomorrow.toISOString().split('T')[0];
+
+      // Radio card click behavior
+      document.querySelectorAll('.option-select-card').forEach(card => {
+        card.addEventListener('click', function() {
+          const radio = this.querySelector('input[type="radio"]');
+          if (radio) {
+            radio.checked = true;
+            const group = document.querySelectorAll(`input[name="${radio.name}"]`);
+            group.forEach(r => r.closest('.option-select-card').classList.remove('active'));
+            this.classList.add('active');
+            updateCakeConfig();
+          }
+        });
+      });
+
+      window.updateCakeConfig = function() {
+        const occasion = document.querySelector('input[name="occasion"]:checked')?.value || '';
+        const weightRadio = document.querySelector('input[name="weight"]:checked');
+        const sponge = document.querySelector('input[name="sponge"]:checked')?.value || '';
+        const fillingRadio = document.querySelector('input[name="filling"]:checked');
+        const frostingRadio = document.querySelector('input[name="frosting"]:checked');
+
+        const basePrice = Number(weightRadio?.dataset.base || 650000);
+        const fillingExtra = Number(fillingRadio?.dataset.extra || 0);
+        const frostingExtra = Number(frostingRadio?.dataset.extra || 0);
+        const totalPrice = basePrice + fillingExtra + frostingExtra;
+
+        // Update Summary
+        document.getElementById('sum-occasion').textContent = occasion;
+        document.getElementById('sum-weight').textContent = `${weightRadio.value} کیلوگرم`;
+        document.getElementById('sum-sponge').textContent = sponge;
+        document.getElementById('sum-filling').textContent = fillingRadio.value.split('+')[0];
+        document.getElementById('sum-frosting').textContent = frostingRadio.value;
+        document.getElementById('sum-total-price').textContent = window.pastryStore.formatPrice(totalPrice);
+      };
+
+      window.submitCakeOrder = function() {
+        const branchId = document.getElementById('cake-branch-select').value;
+        const branch = window.pastryStore.getBranchById(branchId);
+        const customerName = document.getElementById('cake-customer-name').value.trim();
+        const customerPhone = document.getElementById('cake-customer-phone').value.trim();
+        const customText = document.getElementById('cake-custom-text').value.trim();
+        const deliveryDate = document.getElementById('cake-delivery-date').value;
+        const deliveryTime = document.getElementById('cake-delivery-time').value;
+
+        const weightRadio = document.querySelector('input[name="weight"]:checked');
+        const fillingRadio = document.querySelector('input[name="filling"]:checked');
+        const frostingRadio = document.querySelector('input[name="frosting"]:checked');
+
+        const basePrice = Number(weightRadio?.dataset.base || 650000);
+        const fillingExtra = Number(fillingRadio?.dataset.extra || 0);
+        const frostingExtra = Number(frostingRadio?.dataset.extra || 0);
+        const totalPrice = basePrice + fillingExtra + frostingExtra;
+
+        const orderData = {
+          occasion: document.querySelector('input[name="occasion"]:checked')?.value,
+          weightKg: weightRadio?.value,
+          sponge: document.querySelector('input[name="sponge"]:checked')?.value,
+          filling: fillingRadio?.value,
+          frosting: frostingRadio?.value,
+          customText,
+          deliveryDate,
+          deliveryTime,
+          branchId,
+          branchName: branch ? branch.name : 'شعبه مرکزی',
+          customerName,
+          customerPhone,
+          estimatedPrice: totalPrice
+        };
+
+        const createdOrder = window.pastryStore.saveCakeOrder(orderData);
+
+        // Show Modal
+        const modal = document.getElementById('cake-success-modal');
+        document.getElementById('cake-order-tracking').textContent = `کد پیگیری سفارش: ${createdOrder.id}`;
+        document.getElementById('cake-modal-branch-msg').innerHTML = `
+          سفارش شما با موفقیت برای همکاران حاضر در <strong>«${orderData.branchName}»</strong> ارسال گردید. سرآشپز قنادی سفارش شما را بررسی نموده و همکاران ما جهت تایید نهایی زمان تحویل با شماره <strong>${customerPhone}</strong> تماس خواهند گرفت.
+        `;
+        modal.style.display = 'flex';
+      };
+
+      updateCakeConfig();
+    });
+  </script>
+</body>
+</html>
