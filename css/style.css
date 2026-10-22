@@ -1024,12 +1024,29 @@ img, canvas {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .btn-auth-nav span {
-    display: none;
+    display: none !important;
   }
   .btn-auth-nav {
-    padding: 0.45rem 0.6rem;
+    padding: 0.45rem !important;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .site-header {
+    width: 94%;
+    padding: 0.45rem 0.85rem;
+  }
+  .brand-name {
+    font-size: 0.98rem;
+  }
+  .brand-sub {
+    font-size: 0.58rem;
   }
 }
 
