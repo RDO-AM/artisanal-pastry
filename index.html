@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; media-src 'self' data: blob:; connect-src 'self';">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>نام برند شما | دموی تعاملی قنادی فاخر</title>
   <meta name="description" content="تجربه‌ای تعاملی و فوق‌العاده روان از خلق دسرهای اصیل. دموی اختصاصی برند شما با تکنولوژی اسکرول ۶۰ فریم کانواس.">
   <meta name="theme-color" content="#F7F2EB">
@@ -161,6 +163,9 @@
       <div class="canvas-sticky-container">
         <!-- Canvas for Ultra-Smooth 60 FPS Sequence Scrubbing -->
         <canvas id="sequence-canvas"></canvas>
+
+        <!-- Seamless Bottom Transition Gradient to Products Section -->
+        <div class="canvas-bottom-fade" id="canvas-bottom-fade"></div>
 
         <!-- Minimal Responsive Editorial Texts (Side on Desktop, Top-Centered on Mobile with High Legibility) -->
         <div class="story-text-container">
@@ -361,16 +366,17 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Render Hot Best-Sellers of the Week
+      // 1. Render Hot Best-Sellers of the Week (Safe DOM Injection)
       const hotRow = document.getElementById('homepage-hot-products-row');
       if (hotRow && window.pastryStore) {
         const hotProds = window.pastryStore.getHotWeeklyProducts();
+        const sanitize = (str) => (window.pastrySecurity ? window.pastrySecurity.sanitize(str) : String(str || ''));
         hotRow.innerHTML = hotProds.map(prod => `
-          <article class="pastry-product-card" id="card-${prod.id}" style="flex: 0 0 290px; max-width: 290px;">
+          <article class="pastry-product-card" id="card-${sanitize(prod.id)}" style="flex: 0 0 290px; max-width: 290px;">
             <div class="card-img-wrapper">
               <span class="card-badge-floating" style="background: rgba(220, 38, 38, 0.9);">🔥 پرفروش هفته</span>
               ${prod.image ? `
-                <img src="${prod.image}" alt="${prod.title}" class="card-real-img" loading="lazy">
+                <img src="${encodeURI(prod.image)}" alt="${sanitize(prod.title)}" class="card-real-img" loading="lazy">
               ` : `
                 <div class="card-placeholder-box">
                   <div class="placeholder-brand-icon">
@@ -384,13 +390,13 @@
             </div>
 
             <div class="card-info-body">
-              <h3 class="card-product-title" style="cursor: pointer; margin-bottom: 0.8rem;" onclick="window.location.href='products.html#shelf-${prod.categoryId}'">${prod.title}</h3>
+              <h3 class="card-product-title" style="cursor: pointer; margin-bottom: 0.8rem;" onclick="window.location.href='products.html#shelf-${encodeURIComponent(prod.categoryId)}'">${sanitize(prod.title)}</h3>
 
               <div class="card-footer-action">
                 <div class="card-price-value">
                   ${window.pastryStore.formatPrice(prod.price)}
                 </div>
-                <button class="btn-add-cart" onclick="window.pastryStore.addToCart('${prod.id}', 1); window.renderSideCart();">
+                <button class="btn-add-cart" onclick="window.pastryStore.addToCart('${sanitize(prod.id)}', 1); window.renderSideCart();">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="9" cy="21" r="1"></circle>
                     <circle cx="20" cy="21" r="1"></circle>
@@ -404,40 +410,41 @@
         `).join('');
       }
 
-      // 2. Render Branches
+      // 2. Render Branches (Safe DOM Injection)
       const branchesGrid = document.getElementById('homepage-branches-grid');
       if (branchesGrid && window.pastryStore) {
         const branches = window.pastryStore.getBranches();
+        const sanitize = (str) => (window.pastrySecurity ? window.pastrySecurity.sanitize(str) : String(str || ''));
         branchesGrid.innerHTML = branches.map(b => `
           <div class="branch-card">
             <div class="branch-img-wrapper" style="height: 185px; overflow: hidden; border-radius: 14px; margin-bottom: 0.9rem; position: relative;">
-              <img src="${b.image}" alt="${b.name}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
-              <span class="branch-badge" style="position: absolute; top: 10px; right: 10px; background: rgba(30,27,24,0.75); color: #fff; backdrop-filter: blur(8px); border: 1px solid rgba(212,175,55,0.4);">${b.badge || 'پخت روز و پذیرایی'}</span>
+              <img src="${encodeURI(b.image)}" alt="${sanitize(b.name)}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease;">
+              <span class="branch-badge" style="position: absolute; top: 10px; right: 10px; background: rgba(30,27,24,0.75); color: #fff; backdrop-filter: blur(8px); border: 1px solid rgba(212,175,55,0.4);">${sanitize(b.badge) || 'پخت روز و پذیرایی'}</span>
             </div>
-            <h3 class="branch-name">${b.name}</h3>
+            <h3 class="branch-name">${sanitize(b.name)}</h3>
             <div class="branch-detail-row">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                 <circle cx="12" cy="10" r="3"></circle>
               </svg>
-              <span>${b.address}</span>
+              <span>${sanitize(b.address)}</span>
             </div>
             <div class="branch-detail-row">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
               </svg>
-              <span dir="ltr" style="font-weight: 700;">${b.phone}</span>
+              <span dir="ltr" style="font-weight: 700;">${sanitize(b.phone)}</span>
             </div>
             <div class="branch-detail-row">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <circle cx="12" cy="12" r="10"></circle>
                 <polyline points="12 6 12 12 16 14"></polyline>
               </svg>
-              <span>${b.workingHours}</span>
+              <span>${sanitize(b.workingHours)}</span>
             </div>
             <div style="margin-top:auto; padding-top:0.8rem; border-top:1px dashed #eee; font-size:0.8rem; color:var(--text-muted); display:flex; justify-content:space-between;">
               <span>مدیریت شعبه:</span>
-              <strong>${b.manager}</strong>
+              <strong>${sanitize(b.manager)}</strong>
             </div>
           </div>
         `).join('');
