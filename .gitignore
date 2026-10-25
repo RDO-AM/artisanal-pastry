@@ -1,13 +1,8 @@
 # Internal Intellectual Property & Clean Source Backup
 js_source_clean/
-*.dev.js
-*.dev.mjs
 *.docx
 *.py
 manual.html
-node_modules/
-.vercel/
-.wrangler/
 
 # Operating System Files
 Thumbs.db
